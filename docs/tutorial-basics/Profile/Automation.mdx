@@ -1,0 +1,83 @@
+---
+sidebar_position: 2
+title: Automation
+description: Browser Profile Automation Guide
+---
+
+# Automation
+
+Automation allows you to automate tasks and actions across multiple Browser Profiles. The system supports running automated workflows, auto-login features, and configuring advanced task execution settings.
+
+---
+
+## Automation Types
+
+When clicking the **Automation** menu, the following options are available:
+
+* **Auto workflow**: Automate custom workflows, steps, and interactions across selected profiles.
+* **Auto login**: Automatically log into pre-configured accounts on various platforms (Premium feature).
+
+---
+
+## Automation Configuration
+
+Before executing any automation, you can configure the settings through the following tabs in the Automation dialog:
+
+---
+
+### Optional
+
+The **Optional** tab is used for defining basic task parameters:
+
+* **Number of profiles**: The number of browser profiles you want to execute the automation on (Default: `10`).
+* **Process**: Dropdown to select the specific automation process or workflow script to run.
+* **Execution Frequency**: Define when to run the task (e.g., `Immediate` or scheduled frequency).
+
+---
+
+### Run Configuration
+
+The **Run Configuration** tab manages how the browsers are opened and arranged on your screen:
+
+* **Number of concurrent threads**: The maximum number of browser profiles that can run simultaneously (Default: `10`).
+* **Scale**: Zoom/scale level of the browser windows (Default: `1`).
+* **Window layout**: Define how browser windows are arranged in rows and columns (e.g., Row: `2`, Column: `5`).
+* **Open time between profiles (ms)**: The delay time (in milliseconds) before opening the next profile (Default: `300`).
+* **Numbers of Repeat**: Number of times the automation task should repeat (Default: `0` for no repeat).
+
+#### Additional Options (Checkboxes)
+
+* **Custom size**: Set a specific width and height for the browser windows (Default: `180` x `180`).
+* **Auto scale**: Automatically scale browser windows to fit the screen.
+* **Close browser after completion**: Close the browser automatically when the task finishes.
+* **Check Ip at start**: Verify the IP address before starting the automation.
+* **Display error details**: Show detailed error logs if execution fails.
+
+---
+
+### Network
+
+The **Network** tab configures how IP changes are handled during automation:
+
+* **Change Ip option**: Dropdown to select IP change behavior:
+  * **Do not change IP**: Keep using the current IP/Proxy of the profile.
+  * **Proxy**: Assign a specific Proxy.
+  * **Rotation proxy**: Use a rotating proxy to automatically change IPs during run.
+
+---
+
+### Information
+
+The **Information** tab is used for passing custom flags to the browser:
+
+* **Chrome arguments**: Custom command-line arguments to pass to the Chrome browser.
+  * *Example*: `argument1=abc;argument2=xyz`
+
+---
+
+## Execution
+
+Once configured, click one of the buttons in the top right to start:
+
+* **Run Now**: Immediately execute the automation in the foreground.
+* **Run as Task**: Queue and run the automation as a background task.

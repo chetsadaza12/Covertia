@@ -1,0 +1,62 @@
+---
+sidebar_position: 3
+title: Proxy Management
+description: Guide to managing and configuring Proxies for Browser Profiles
+---
+
+# Proxy Management
+
+Proxy Management allows you to verify, import, duplicate, and remove proxies for your Browser Profiles in bulk.
+
+---
+
+## Proxy Menu Options
+
+Right-clicking or selecting the Proxy options under a profile menu gives you access to the following features:
+
+* **Check proxy**: Instantly test the connectivity and check the details of the proxy assigned to selected profiles.
+* **Import proxy**: Open the Update Proxy dialog to assign new proxies to selected profiles in bulk.
+* **Copy proxy**: Copy the proxy credentials and configurations of the selected profile to your clipboard.
+* **Remove proxy**: Detach and delete the proxy configuration from the selected profiles.
+
+---
+
+## Update Proxy Configuration
+
+When importing or updating proxies, the **Update Proxy** dialog allows you to manage proxy assignments for selected profiles.
+
+---
+
+### Format Guide
+
+The system supports both HTTP and SOCKS5 proxy types. Enter one proxy per row inside the input field.
+
+The default proxy type is HTTP if not specified.
+
+#### Formats
+
+* **HTTP with credentials**:
+  `http://ip:port:username:password` or `http://host:port:username:password`
+  
+  *Example*:
+  ```bash id="h2x4n8"
+  http://192.168.1.1:3000:admin:admin
+  ```
+
+* **SOCKS5 without credentials**:
+  `socks5://ip:port` or `socks5://host:port`
+  
+  *Example*:
+  ```bash id="v1m8q2"
+  socks5://192.168.1.1:3000
+  ```
+
+---
+
+### Configuration Options
+
+* **Mode**: Define proxy repeating or rotational behavior (Default: `No repeat`).
+* **Proxy Type**: Select the default proxy protocol from the dropdown (options include `HTTP`, `SOCKS5`, etc.).
+* **Proxies**: Enter the list of proxies to be assigned (one proxy per row).
+
+Once you have entered the proxies, click **OK** to apply them to selected profiles, or **Cancel** to abort.

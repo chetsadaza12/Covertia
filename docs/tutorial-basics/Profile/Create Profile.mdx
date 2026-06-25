@@ -1,0 +1,844 @@
+---
+sidebar_position: 1
+title: Create Profile
+description: Browser Profile Creation Guide
+---
+
+# Create Profile
+
+Create Profile is used to create a new Browser Profile. The system supports multiple creation methods depending on different usage scenarios.
+
+---
+
+## Create Mode
+
+Inside the Create Profile menu, the following modes are available:
+
+| Mode                 | Description                               |
+| -------------------- | ----------------------------------------- |
+| Single Create        | Create profiles one by one                |
+| Multiple Create      | Create multiple profiles at the same time |
+| Import File          | Import profile data from a file           |
+| Import from External | Import profile data from external systems |
+
+---
+
+## Single Create
+
+Single Create is a mode for creating Browser Profiles individually. Suitable for:
+
+* Custom profile creation
+* Detailed configuration
+* Advanced fingerprint management
+
+Inside Single Create, the following sections are available:
+
+---
+
+### Overview
+
+Overview is used for configuring the basic settings of a Browser Profile and is the most important part of fingerprint creation.
+
+The values inside Overview are used to identify the Browser, such as:
+
+* Operating System
+* Browser Version
+* Language
+* Timezone
+* Geolocation
+* User-Agent
+
+If the values are not consistent, the Browser may appear suspicious and increase the risk of detection.
+
+---
+
+#### Name
+
+Used to set the profile name.
+
+Recommended:
+
+* Use readable names
+* Separate profiles by usage
+* Make profiles easy to search
+
+##### Example
+
+```bash id="m8l2x1"
+FB_TH_01
+TikTok_VN_01
+Google_Work_01
+```
+
+---
+
+#### Group
+
+Used to organize profiles into categories.
+
+Suitable for:
+
+* Platform grouping
+* Country grouping
+* Work type grouping
+
+##### Example
+
+```bash id="e2f7v9"
+Facebook
+TikTok
+Google
+Warm
+Testing
+```
+
+---
+
+#### Operating System
+
+Select the Operating System that matches the real device.
+
+##### Recommended
+
+| Device     | OS            |
+| ---------- | ------------- |
+| Windows PC | Win10 / Win11 |
+| MacBook    | MacOS         |
+| Android    | Android       |
+| iPhone     | iOS           |
+
+##### Best Practice
+
+```diff id="q7f4b2"
++ Use an OS that matches the real device
++ Keep the same OS consistently
++ Use supported Browser values
+```
+
+##### Avoid
+
+```diff id="f2s8m4"
+- Randomly switching OS
+- Frequently changing OS
+- Using values unrelated to the device
+```
+
+---
+
+#### Browser
+
+Chrome is the recommended Browser because:
+
+* Supports most websites
+* Natural-looking fingerprint
+* Stable performance
+* Good extension support
+
+##### Recommended
+
+```bash id="r3x8t5"
+Chrome
+```
+
+---
+
+#### Browser Version
+
+Use a modern version, but not necessarily the latest.
+
+##### Recommended Versions
+
+```bash id="u6m2w7"
+138
+139
+140
+141
+```
+
+##### Avoid
+
+```diff id="g7k1n9"
+- Very old versions
+- Beta / Canary builds
+- Unusual versions
+```
+
+---
+
+#### URL Startup
+
+Websites that open automatically when starting the profile.
+
+##### Recommended
+
+```bash id="v4n8x2"
+https://google.com
+https://youtube.com
+https://facebook.com
+```
+
+##### Why?
+
+Helps the session appear more natural and reduces suspicious behavior from new Browser sessions.
+
+##### Avoid
+
+```diff id="y5m7d3"
+- Opening login pages directly every time
+- Opening dashboards immediately
+```
+
+---
+
+#### User-Agent
+
+User-Agent is information sent by the Browser to identify the system being used.
+
+##### Recommended
+
+```bash id="b1x4v8"
+Auto
+```
+
+##### Why Auto?
+
+The system automatically synchronizes:
+
+* Browser
+* OS
+* Version
+
+##### Avoid
+
+```diff id="w8n2k6"
+- Random User-Agents from the internet
+- Outdated User-Agents
+- User-Agents that do not match the real Browser
+```
+
+---
+
+#### Select Country
+
+Select a country that matches the Proxy or IP.
+
+##### Example
+
+| Proxy    | Country       |
+| -------- | ------------- |
+| Thailand | Thailand      |
+| Vietnam  | Vietnam       |
+| USA      | United States |
+
+##### Important
+
+Country should match:
+
+* IP Address
+* Timezone
+* Language
+* Geolocation
+
+---
+
+#### Timezone
+
+Timezone should match the country or IP location.
+
+##### Recommended
+
+| Country  | Timezone         |
+| -------- | ---------------- |
+| Thailand | Asia/Bangkok     |
+| Vietnam  | Asia/Ho_Chi_Minh |
+| Japan    | Asia/Tokyo       |
+
+##### Avoid
+
+```diff id="x2n5f1"
+- Thailand IP with USA Timezone
+- Vietnam IP with Europe Timezone
+```
+
+---
+
+#### Geolocation
+
+Used to control Browser location access.
+
+##### Recommended
+
+```bash id="k6m3z8"
+Allow
+```
+
+##### Why?
+
+Makes the Browser appear more like a real user.
+
+##### Avoid
+
+```diff id="h9s2q4"
+- Blocking all profiles
+```
+
+Some websites may consider this suspicious behavior.
+
+---
+
+#### Location Type
+
+##### Recommended
+
+```bash id="d7v5m1"
+Country
+```
+
+Suitable for:
+
+* General usage
+* Social Media
+* Warm Profiles
+
+##### Custom
+
+Use when:
+
+* Using Residential Proxy
+* Using Mobile Proxy
+* Setting a custom IP location
+
+---
+
+#### Language
+
+Language should match the selected country.
+
+##### Thailand
+
+```bash id="n5q8v1"
+Thai
+English
+```
+
+##### Vietnam
+
+```bash id="p4z1r7"
+Vietnamese
+English
+```
+
+##### Japan
+
+```bash id="c2m6x9"
+Japanese
+English
+```
+
+##### Best Practice
+
+Language should match:
+
+* Country
+* Keyboard Layout
+* Browser Language
+* Timezone
+
+---
+
+#### Fingerprint Consistency
+
+The most important part of a Browser Profile is consistency between all values.
+
+##### Consistency Checklist
+
+```diff id="a8v2m5"
++ IP matches Country
++ Country matches Timezone
++ Language matches region
++ Realistic Browser Version
++ Geolocation matches IP
+```
+
+##### Risky Example
+
+```diff id="u3n7w1"
+- Vietnam IP
+- USA Timezone
+- Russian Language
+- Windows with MacOS User-Agent
+```
+
+This type of configuration has a high risk of detection.
+
+---
+
+### Network
+
+#### Proxy Type
+
+Select the type of Proxy you want to use.
+
+##### Recommended
+
+```bash id="m1x8q4"
+SOCKS5
+```
+
+---
+
+#### Proxy
+
+Enter the full Proxy information.
+
+##### Format
+
+```bash id="p4n7v2"
+host:port:username:password
+```
+
+##### Example
+
+```bash id="q8m2x5"
+192.168.1.1:8000:user01:password01
+```
+
+---
+
+#### Host
+
+Enter the Proxy IP or Domain.
+
+##### Example
+
+```bash id="n2x7m4"
+192.168.1.1
+proxy.example.com
+```
+
+---
+
+#### Port
+
+Enter the Proxy Port.
+
+##### Example
+
+```bash id="x7m1q9"
+8080
+1080
+```
+
+---
+
+#### Username
+
+Enter the Proxy Username.
+
+##### Example
+
+```bash id="a8v2m1"
+proxyuser01
+```
+
+---
+
+#### Password
+
+Enter the Proxy Password.
+
+##### Example
+
+```bash id="f5m8q2"
+mypassword123
+```
+
+---
+
+#### Check
+
+Click the `Check` button to verify whether the Proxy is working correctly.
+
+If successful, the system will:
+
+* Verify the IP
+* Check Proxy status
+* Test the network connection
+
+---
+
+### Recommended Setup
+
+#### Thailand Profile
+
+```yaml id="u4m7x1"
+Proxy Type: SOCKS5
+Country: Thailand
+Timezone: Asia/Bangkok
+Language:
+  - Thai
+  - English
+```
+
+---
+
+#### Vietnam Profile
+
+```yaml id="v9x2m5"
+Proxy Type: SOCKS5
+Country: Vietnam
+Timezone: Asia/Ho_Chi_Minh
+Language:
+  - Vietnamese
+  - English
+```
+
+---
+
+### Cookies
+
+Used for managing Cookies inside the Browser Profile.
+
+Supported features:
+
+* Import Cookies
+* Export Cookies
+* Auto Save Cookies
+
+Cookies help maintain session continuity and reduce suspicious account behavior.
+
+---
+
+### Advanced Settings
+
+Used for advanced Browser Fingerprint customization, such as:
+
+* Canvas
+* WebGL
+* Fonts
+* Audio Context
+* Hardware Concurrency
+* Device Memory
+
+Suitable for advanced users who need detailed fingerprint customization.
+
+---
+
+### Note
+
+Used to add internal notes to the profile.
+
+Suitable for:
+
+* Account information
+* Work type
+* Profile status
+* Additional details
+
+Example:
+
+```bash id="7n9e1m"
+Facebook Warm Account
+Created: 2026-04-17
+Proxy: Vietnam Residential
+```
+
+---
+
+### Recommended Workflow
+
+Recommended setup order:
+
+```bash id="4ov5x7"
+1. Configure Overview
+2. Configure Network
+3. Add Cookies
+4. Adjust Advanced Settings
+5. Add Notes
+```
+
+Consistent settings across all sections help the Browser Profile appear more realistic.
+
+---
+
+## Multiple Create
+
+Multiple Create is used to create multiple Browser Profiles at the same time. Suitable for tasks that require creating many profiles in a single operation.
+
+---
+
+### Number of profiles
+
+Used to define the number of profiles you want to create.
+
+#### Example
+
+```bash id="u8m2x1"
+2
+5
+10
+50
+```
+
+---
+
+### Group
+
+Used to select the Group for all profiles.
+
+If no Group is selected, the system will use:
+
+```bash id="x4m7q2"
+No Group
+```
+
+#### Example
+
+```bash id="p2v8m5"
+Facebook
+TikTok
+Google
+Warm
+```
+
+---
+
+### Total profiles
+
+Displays the total number of profiles being prepared for creation.
+
+#### Example
+
+```bash id="c8m1x4"
+Total profiles: 10
+```
+
+---
+
+### Total number of valid profiles
+
+Displays the number of profiles with valid and complete information that are ready to be created.
+
+#### Example
+
+```bash id="m5x2q8"
+Total number of valid profiles: 10
+```
+
+---
+
+### Total number of invalid profiles
+
+Displays the number of profiles with invalid or incomplete information.
+
+#### Example
+
+```bash id="v7q1m2"
+Total number of invalid profiles: 0
+```
+
+---
+
+### Browser configuration
+
+Used to select the Browser Configuration you want to use.
+
+The selected configuration will be applied to all created profiles.
+
+#### How to use
+
+1. Click `Browser configuration`
+2. Select the desired Config
+3. The system will apply the settings to all profiles
+
+---
+
+### Add Browser Config
+
+Used to create a new Browser Configuration.
+
+#### How to use
+
+1. Click `Add Browser Config`
+2. Configure:
+
+   * Operating System
+   * Browser
+   * Version
+   * Country
+   * Timezone
+   * Language
+3. Click Save
+
+After saving, the Config can be selected inside Browser configuration.
+
+---
+
+### Create Random Operating System
+
+Used to randomly generate Operating Systems automatically.
+
+#### Example
+
+```bash id="n1m7x5"
+Win10
+Win11
+MacOS
+Linux
+```
+
+Enable this option when:
+
+* You want to diversify fingerprints
+* Creating a large number of profiles
+* Reducing OS duplication
+
+---
+
+### Create profiles
+
+Used to start creating all Browser Profiles.
+
+#### How to use
+
+1. Set the Number of profiles
+2. Select Group
+3. Select Browser configuration
+4. Enable `Create Random Operating System` (optional)
+5. Click `Create profiles`
+
+The system will automatically begin creating Browser Profiles.
+
+---
+
+## Import File
+
+Import File is used to create multiple Browser Profiles at the same time by uploading an Excel (.xlsx or .csv) file. Suitable for cases where profile and Proxy data are already prepared in a spreadsheet.
+
+---
+
+### Upload excel file
+
+Button used to select and upload an Excel or CSV file containing profile data.
+
+#### How to use
+
+1. Click `Upload excel file`
+2. Select a spreadsheet file from your computer
+
+---
+
+### Download Template File
+
+Link used to download the Template file for entering profile information according to the required system structure.
+
+#### Data Entry Recommendations
+
+The spreadsheet should contain important columns such as:
+
+* **Name**: Profile name (required)
+* **Proxy**: Proxy information in the format `ip:port:username:password` or `host:port`
+* **User-Agent**: Specific User-Agent configuration (optional)
+* **Cookie**: Initial cookies for each profile
+
+---
+
+### Profile Stats
+
+After uploading the file, the system will immediately analyze and display validation statistics:
+
+* **Total profiles**: Total number of profiles found in the Excel file
+* **Total number of valid profiles**: Number of profiles with valid and complete data, ready for import
+* **Total number of invalid profiles**: Number of profiles with invalid or incomplete data
+* **Circle chart (%)**: Displays the percentage ratio of profiles that passed validation
+
+---
+
+### Browser configuration
+
+Section used to specify the Browser Profile configuration that will be applied to imported files.
+
+* Select the Config you want to use from the Dropdown list
+* You can click `+ Add Browser Config` to create a new configuration if needed
+
+---
+
+### Import
+
+Button used to confirm and import all profiles from the Excel file into the system.
+
+#### How to use
+
+1. Upload the Excel file and confirm validation using **Total number of valid profiles**
+2. Select a Config in `Browser configuration`
+3. Click `Import` to create and save profiles into the management system
+
+---
+
+## Import from external
+
+Import from external is used to scan and import existing Browser Profile files from external systems or from existing Chrome profiles stored on the computer.
+
+---
+
+### Select profile
+
+Button used to enable folder selection for profile data.
+
+---
+
+### Browser custom
+
+Toggle option used to enable or disable additional Browser customization settings during import.
+
+---
+
+### Enter path to file chrome
+
+Input field used to specify the folder path containing Chrome profiles or other Browser profiles.
+
+#### How to use
+
+* Enter the full path, for example:
+
+```bash id="w4m8x2"
+C:\Users\Username\AppData\Local\Google\Chrome\User Data
+```
+
+* Or click the folder icon 📁 on the right side to select a folder directly from your computer
+
+---
+
+### List profiles
+
+Table displaying all detected profiles found in the specified external Browser folder path.
+
+* Check the Checkbox next to each profile to select which profiles you want to import
+* If no data is found, the system will display **No Data** along with an empty box icon
+
+---
+
+### Concurrent Threads
+
+Input field used to limit the number of profiles imported simultaneously (parallel processing threads).
+
+#### Example
+
+```bash id="h6n1q9"
+20
+```
+
+Higher values will make the import process faster but may consume more CPU and RAM resources.
+
+---
+
+### Import (External)
+
+Bottom-right button (with the red pencil icon) used to start importing the selected profiles.
+
+#### How to use
+
+1. Enter the folder path in `Enter path to file chrome` and wait for the system to scan the profiles
+2. Select the desired profiles in the `List profiles` table
+3. Configure `Concurrent Threads`
+4. Click `Import` to import the selected profiles into the management system
