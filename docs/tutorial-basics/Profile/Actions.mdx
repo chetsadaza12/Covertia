@@ -1,0 +1,177 @@
+---
+sidebar_position: 5
+title: Actions
+description: Browser Profile Actions Guide
+---
+
+# Profile Actions
+
+Profile Actions provide advanced utility functions to manage, organize, backup, and sync your Browser Profiles. These options help you maintain data integrity and transfer profiles between different groups or systems.
+
+---
+
+## Actions Menu
+
+Right-clicking a profile and navigating to **Actions** opens a submenu with the following functions:
+
+| Option | Description |
+| --- | --- |
+| Assign group | Transfer selected profiles to a different group or category |
+| Backup | Export a profile as a compressed ZIP file or import a backup ZIP |
+| Export cookies | Save profile cookies to a file in JSON or String format |
+| Recover | Restore profile data to a previous working state |
+| Synchronize cloud | Sync local browser profile changes with the cloud storage |
+| Swap Profile | Exchange profiles or re-order profiles in the list |
+
+---
+
+## Assign Group
+
+The **Assign group** dialog (Group transfer of records) allows you to move profiles between categories for better organization.
+
+---
+
+### Configuration
+
+#### Profile group
+
+Select the destination group for the selected profiles.
+
+* **Selection Dropdown**: Choose from your existing groups list.
+* **Add Group Button (+)**: Click the **+** button next to the dropdown to create a new group name immediately without closing the dialog.
+
+---
+
+## Backup
+
+The **Backup** system provides import and export functionality to safeguard profile settings and data.
+
+---
+
+### Export Backup
+
+Export your current profile state to a local zip archive.
+
+#### File Path
+
+The destination folder where the backup ZIP file will be saved. Click the folder icon 📁 to select a path.
+
+#### Clean export (skip cache, faster)
+
+If checked, the export will ignore browser temporary cache and log files.
+
+##### Recommended
+
+```diff id="abackup1"
++ Always check 'Clean export' to drastically reduce backup file size and speed up processing.
+```
+
+---
+
+### Import Backup
+
+Restore or load a previously exported profile ZIP archive.
+
+#### Select the ZIP file
+
+Drag and drop your `.zip` backup file directly into the designated dashed box, or click the **Select the ZIP file** button to browse files on your computer.
+
+---
+
+## Export Cookies
+
+The **Export cookies** feature allows you to extract active website sessions from selected profiles.
+
+> [!IMPORTANT]
+> This feature only works if the **Save cookie** setting is enabled in the profile's main configuration. If disabled, no cookies will be recorded or exported.
+
+---
+
+### Configuration
+
+#### Cookie Scope
+
+* **All**: Export all cookies across all domains stored in the browser profile.
+* **Domain**: Export only the cookies associated with a specific web domain. When selected, an input box will appear to specify the target domain (e.g., `facebook.com` or `tiktok.com`).
+
+#### Cookie Format
+
+* **Json**: Export cookies in JSON array format (recommended for most modern tools and bots).
+* **String**: Export cookies in Netscape string format (standard format used by browser extensions like EditThisCookie).
+
+#### File Path
+
+The local file path where the exported cookie text file will be saved. Click the folder icon 📁 to select a destination.
+
+---
+
+## Recover
+
+The **Recover** tool allows you to restore browser profile configurations, bookmarks, and cookies from local backups, or migrate profiles from other anti-detect browsers.
+
+---
+
+### Configuration
+
+#### Enter file path profile
+
+The directory path where your backup files are stored. Click the folder icon 📁 to select the source directory.
+
+#### Concurrent Threads
+
+Define the maximum number of recovery tasks to run simultaneously. The default is set to `20`.
+* Use higher threads to speed up bulk recovery on powerful machines.
+* Use lower threads if you experience high CPU or disk usage.
+
+#### Clean profiles before recovery
+
+A toggle switch. When enabled, it will wipe existing local profile data directories before initiating the recovery process, ensuring a clean installation without leftover caching issues or conflicts.
+
+#### Core Engines / Migration Formats
+
+Select the source format of the profile backup you want to recover or migrate:
+
+* **Covertia Core**: Restore profiles native to this system.
+* **GPM**: Migrate profile backups exported from GPM.
+* **Genlogin**: Migrate profile backups exported from Genlogin.
+* **Other**: General migration for other formats.
+
+---
+
+## Synchronize cloud
+
+Manually trigger a sync operation to upload local profile states (cookies, local storage, extensions, bookmarks) to the cloud. This allows team members or multiple devices sharing the same account to run the profile with updated session data.
+
+---
+
+## Swap Profile
+
+The **Swap Profile** feature is used to quickly exchange configurations, order, or data directories between profiles, allowing clean swaps without manually changing settings on each profile.
+
+---
+
+### Configuration
+
+#### Profile Pairs
+
+Choose the two profiles you want to swap using the **Select first profile** and **Select second profile** dropdowns. Clicking the **X** button will remove a pair configuration.
+
+#### Add Another Pair (+)
+
+Click the **+ Add Another Pair** link to configure multiple profile swaps at the same time, allowing you to perform bulk swap operations in a single click.
+
+---
+
+## Best Practices
+
+```diff id="abest1"
++ Enable 'Clean export' when backing up to save disk space and upload bandwidth.
++ Group profiles using 'Assign group' before starting automated campaigns to keep work organized.
++ Verify 'Save cookie' is enabled in settings before trying to export cookies.
+```
+
+```diff id="abest2"
+- Do not modify files inside the Backup ZIP manually as this may cause corruption during import.
+- Keep cookie exports secure, as they contain active session logins that bypass 2FA.
+```
+

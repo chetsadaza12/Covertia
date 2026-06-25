@@ -1,0 +1,206 @@
+---
+sidebar_position: 4
+title: Resource Management
+description: Browser Profile Resource Management Guide
+---
+
+# Resource Management
+
+Resource Management is used to store, manage, and verify account credentials and platform-specific session data (such as Facebook accounts) directly inside your Browser Profiles. This makes it easy to run automations or manage logins without needing external spreadsheets or copy-pasting.
+
+---
+
+## Resource Options
+
+Right-clicking a profile and selecting **Resource** provides the following options:
+
+| Option               | Description                                           |
+| -------------------- | ----------------------------------------------------- |
+| Import resource      | Bulk assign account details to selected profiles     |
+| Export resource      | Save credentials and cookies to a local text file     |
+| Remove resource      | Delete resource data from the selected profiles       |
+| Check live Facebook  | Automatically check the status of Facebook accounts   |
+
+---
+
+## Import Resource
+
+Import Resource allows you to bind accounts to selected profiles in bulk.
+
+---
+
+### Skip if already present
+
+If checked, the system will not assign new resources to profiles that already have a resource assigned.
+
+##### Best Practice
+
+```diff id="rsk1"
++ Enable this option when adding new accounts to a mixed group of profiles
++ Use this to prevent accidental deletion of existing profile credentials
+```
+
+---
+
+### Overwrite
+
+If checked, any existing resource details on the selected profiles will be completely replaced by the new credentials.
+
+##### Best Practice
+
+```diff id="rov1"
++ Enable this option when replacing expired or locked accounts with fresh ones
++ Use when updating passwords or session cookies for existing profiles
+```
+
+---
+
+### Resource type
+
+Dropdown to select the platform type of the resource.
+
+##### Available Options
+
+```bash id="rtype1"
+Facebook
+Tiktok
+Youtube
+Shoppee
+Instagram
+Twitter
+Telegram
+```
+
+##### Custom Platforms
+You can add your own custom platform by typing the name in the **+ Platform name** input field inside the dropdown menu and clicking the **Add** button.
+
+---
+
+### Format
+
+Define the structure of the raw account data being imported. You can type delimiters (like `|`, `:`, or `;`) and click the **Add key** dropdown to insert variables.
+
+##### Available Keys
+
+| Key | Description |
+| --- | ----------- |
+| `Username` | User ID / Username / Account ID |
+| `Password` | Password |
+| `2Fa` | Two-Factor Authentication Secret (e.g. Google Authenticator key) |
+| `Email` | Recovery or associated email address |
+| `Email Password` | Password for the recovery email |
+| `Token` | Access token for API interactions |
+| `Cookie` | Session cookies |
+
+##### Example Formats
+
+* **Standard Account & 2FA:**
+  ```bash id="rform1"
+  Username|Password|2Fa
+  ```
+* **Full Login & Session Data (Recommended):**
+  ```bash id="rform2"
+  Username|Password|2Fa|Cookie|Token
+  ```
+* **Credentials with Recovery Email:**
+  ```bash id="rform3"
+  Username|Password|2Fa|Email|Email Password
+  ```
+
+---
+
+### List account
+
+The area where you paste the raw account credentials, with one account per line.
+
+##### Data Formatting Guidelines
+
+```diff id="rlist1"
++ Ensure every line has the exact same number of delimiters matching the Format field
++ Verify that there are no empty lines or trailing spaces
+```
+
+##### Example Input
+
+Using the format `Username|Password|2Fa|Cookie`:
+
+```text id="rlistex1"
+100085728491029|password123|JBSWY3DPEHPK3PXP|c_user=100085728491029;xs=12%3Aabc...
+100095810294812|anotherPass456|K5SXD3DPEHPK3PXP|c_user=100095810294812;xs=14%3Axyz...
+```
+
+---
+
+## Export Resource
+
+Export Resource allows you to extract credentials, 2FA keys, cookies, and tokens from your profiles.
+
+---
+
+### Format
+
+Specify how you want the exported data to be structured. This is helpful for moving credentials into automated scripts or third-party tools.
+
+##### Example Export Format
+
+```bash id="rexpform1"
+Username|Password|2Fa|Cookie
+```
+
+---
+
+### File Path
+
+The destination where the text file will be saved.
+
+##### Recommended Setup
+
+1. Click the **Folder 📁** icon on the right side of the text field.
+2. Select your target directory (e.g., `Documents` or `Desktop`).
+3. Enter a filename (e.g., `facebook_export.txt`).
+4. Click **OK** to save the path.
+
+---
+
+## Remove Resource
+
+Remove Resource permanently detaches and deletes the resource credentials from the selected profiles.
+
+##### When to use?
+
+* When an account is permanently banned or deleted.
+* When you want to clean up a profile's data storage to save space or prep it for a new project.
+
+---
+
+## Check live Facebook
+
+An automated background function that checks the current status of the Facebook accounts linked to your profiles.
+
+##### What the check verifies:
+
+* **Live**: The account is active and can be accessed normally.
+* **Checkpoint**: The account is locked by Facebook and requires verification (e.g., identity verification or SMS check).
+* **Disabled**: The account has been banned or disabled by Facebook.
+
+##### Benefits
+
+```diff id="rcheck1"
++ Saves time by automatically verifying accounts without having to open browsers manually
++ Keeps your profile list clean by letting you quickly identify and filter out dead accounts
+```
+
+---
+
+## Best Practices
+
+```diff id="rbest3"
++ Run a 'Check live Facebook' scan before launching automation workflows
++ Keep your 2FA secrets stored in the resource to enable automatic 2FA code generation
++ Regularly export cookies to backup your active login sessions
+```
+
+```diff id="rbest4"
+- Never share exported resource files with unknown users as they contain full access credentials
+- Do not mix different account formats in the same import session
+```
