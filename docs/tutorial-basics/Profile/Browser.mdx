@@ -1,0 +1,186 @@
+---
+sidebar_position: 6
+title: Browser Actions
+description: Browser Profile Configuration and Actions Guide
+---
+
+# Browser Actions
+
+Browser Actions allow you to modify profile names in bulk, clear local cache/cookies, customize fingerprints, update geolocation metadata, and configure startup details.
+
+---
+
+## Browser Menu
+
+Right-clicking a profile and navigating to the **Browser** menu options provides the following features:
+
+| Option | Description |
+| --- | --- |
+| Rename | Change profile names in bulk using auto patterns or manual edits |
+| Clear cookie | Clear stored cookies to log out and reset sessions |
+| Clear cache | Erase temporary internet files to free up space and reload pages clean |
+| Set chrome version | Modify the Chrome browser engine version parameter |
+| New fingerprint | Generate a new hardware and software tracking fingerprint (PRO feature) |
+| Change OS | Update the target operating system fingerprint |
+| Change location | Set custom geolocation coordinates (Latitude/Longitude) |
+| Bookmark | Add or manage default bookmarks inside the browser profiles |
+| Change name color | Apply color tags to profile names for easy classification |
+| Update start URL | Update the homepage tabs that open when launching profiles |
+
+---
+
+## Rename Profiles
+
+The **Rename** dialog allows you to change the names of selected profiles in bulk.
+
+---
+
+### Method
+
+#### Auto Mode
+
+Auto Mode dynamically generates profile names using variable tokens.
+
+* **Format input field**: Build your naming template by typing text and clicking on variables:
+  * `{current name}`: Inserts the current name of the profile.
+  * `{number from 1}`: Appends sequential numbers starting from 1 (e.g., `1`, `2`, `3`).
+  * `{today}`: Inserts the current date.
+
+##### Example Pattern
+
+```bash id="renameauto"
+Format: Covertia Core_{number from 1}-Google
+Result: Covertia Core_1-Google
+```
+
+---
+
+#### Manual Mode
+
+Manual Mode allows you to type or paste a list of custom names directly.
+
+* **Result text box**: You can type or paste a raw list of new names directly into the textbox (one name per line). Each line will be assigned to a selected profile in order.
+
+##### Example Input
+
+```text id="renamemanual"
+FB_Profile_Primary
+FB_Profile_Warm_01
+FB_Profile_Warm_02
+```
+
+---
+
+## Cookie & Cache Management
+
+---
+
+### Clear cookie
+
+Wipes all website session data and cookies stored inside the selected browser profiles.
+
+* **Confirmation Modal**: A warning popup will ask *"Do you want to clear cookies in the profile?"*
+* **Note**: Clearing cookies will automatically log out all active accounts on that profile.
+
+---
+
+### Clear cache
+
+Erases temporary browser assets, site histories, and static cache files.
+
+* **Confirmation Modal**: A confirmation popup will ask *"Do you want to clear cache in the profile?"*
+* **Note**: This does not affect active login sessions or cookies, but forces the browser to download fresh assets next time pages load.
+
+---
+
+## Advanced Fingerprints (PRO)
+
+---
+
+### Set chrome version
+
+Manually update the Chrome engine core version identifier for your selected profiles.
+
+* **Available Versions**: Select from version dropdowns (e.g., `140`, `141`).
+* **Warning**:
+  > [!WARNING]
+  > Different browser versions may use different cookie encryption mechanisms. It is recommended to test with a small number of profiles first before applying changes on a larger scale. You can upgrade your browser version, but it is best to avoid downgrading it to prevent session encryption issues.
+
+---
+
+### New fingerprint
+
+> [!TIP]
+> **PRO feature**: Instantly generates a unique browser fingerprint (Canvas, WebGL, Audio Context, Client Rects, WebRTC, and Screen Resolution metadata) to prevent tracking. Use this when a profile's current fingerprint has been flagged or blocked by a target platform.
+
+---
+
+### Change OS
+
+Modify the operating system parameter of your browser profiles.
+
+* **Available Operating Systems & Sub-Versions**:
+  * **Windows**: Select specific versions (`Win 11`, `Win 10`, `Win 7`, `Win 8`).
+  * **MacOS**
+  * **Linux**
+  * **Android**
+  * **iOS**
+
+---
+
+### Change location
+
+Alters the target location metadata of your browser profile.
+
+* **Select Country**: Search and choose a target country from the searchable dropdown selector to align browser localization with your proxy geographical location.
+
+---
+
+## Personalization & Navigation
+
+---
+
+### Bookmark
+
+Bulk configure default bookmarks that will be pre-installed inside the browser profiles.
+
+* **Import / Remove Mode**: Radio buttons to choose whether to add new bookmarks or clear existing ones.
+* **Zip File Upload**: Import bookmarks from backup archives. Drag and drop `.zip` files into the upload frame, or click **Select the file** to browse.
+* **Text Input Area**: Paste a list of manual bookmarks, one per line.
+  * **Required Format**: `Name_bookmark|URL` (e.g. `Google|https://google.com`)
+
+---
+
+### Change name color
+
+Modify the font styles and colors of profile names in your dashboard list for easier classification and visual sorting.
+
+* **Color Swatch**: Select a custom color from the picker palette.
+* **Opacity Slider**: Control the text transparency level from `0%` to `100%`.
+* **Font Formatting**: Apply toggle options for `Italic`, `Underline`, or select weight style (such as `Normal`).
+* **Live Preview**: See how the text will look in real-time in the `Preview text` block.
+* **Reset**: Restore the profile name back to default formatting.
+
+---
+
+### Update start URL
+
+Set the default landing page that launches automatically when the browser profile is opened.
+
+* **URL Input**: Enter the target URL address (e.g., `https://example.com`).
+
+---
+
+## Best Practices
+
+```diff id="bbest1"
++ Use Auto Rename with '{number from 1}' when managing massive numbers of profiles to keep them ordered.
++ Always match your 'Change location' GPS settings with the actual location of the Proxy IP.
++ Clear cache periodically to prevent disk bloat on automated runner machines.
+```
+
+```diff id="bbest2"
+- Do not generate 'New fingerprints' repeatedly unless you are resetting the profile's identity, as this resets the browser history trust profile.
+- Avoid using different OS settings than your physical machine unless using high-quality anti-detect configurations.
+```
+
