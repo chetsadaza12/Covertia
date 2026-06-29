@@ -4,8 +4,8 @@
 }
 
 .customImageIcon {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
   display: block;
   object-fit: contain;
 }
@@ -21,8 +21,8 @@
 .logsGifIcon,
 .extensionGifIcon,
 .settingsGifIcon {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
   display: block;
   object-fit: contain;
   mix-blend-mode: multiply;
