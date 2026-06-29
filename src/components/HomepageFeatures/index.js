@@ -4,32 +4,32 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: 'Isolated Profiles',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Create and manage multiple isolated browser profiles. Each profile acts
+        as a distinct device environment with customized fingerprints to prevent tracking.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Advanced Automation',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Design, import, and schedule custom workflow scripts. Run automation tasks,
+        auto-logins, and sequential browser operations concurrently.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Smart Proxy Routing',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Route profile connections securely through static or rotating SOCKS5/HTTP proxies
+        with region consistency checks to bypass restrictions.
       </>
     ),
   },
