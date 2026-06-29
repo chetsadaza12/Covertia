@@ -3,6 +3,7 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import MatrixRain from '@site/src/components/MatrixRain';
 
 import Heading from '@theme/Heading';
 import styles from './index.module.css';
@@ -11,7 +12,8 @@ function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
+      <MatrixRain />
+      <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
         </Heading>
