@@ -1,0 +1,40 @@
+.cardTitleIcon {
+  font-size: 1.6rem;
+  margin-right: 0.6rem;
+}
+
+.customImageIcon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  object-fit: contain;
+}
+
+:global([data-theme='dark']) .customImageIcon {
+  filter: invert(1);
+}
+
+.workflowsGifIcon,
+.profileGifIcon,
+.tasksGifIcon,
+.databaseGifIcon,
+.logsGifIcon,
+.extensionGifIcon,
+.settingsGifIcon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+:global([data-theme='dark']) .workflowsGifIcon,
+:global([data-theme='dark']) .profileGifIcon,
+:global([data-theme='dark']) .tasksGifIcon,
+:global([data-theme='dark']) .databaseGifIcon,
+:global([data-theme='dark']) .logsGifIcon,
+:global([data-theme='dark']) .extensionGifIcon,
+:global([data-theme='dark']) .settingsGifIcon {
+  filter: invert(1);
+  mix-blend-mode: screen;
+}
