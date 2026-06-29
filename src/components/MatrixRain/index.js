@@ -6,60 +6,61 @@ const BINARY = '01';
 export default function MatrixRain() {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
-  const layersRef = useRef([]);
-  const charsRef = useRef(null); // persistent character grid
+  const dataRef = useRef(null);
 
-  const initLayers = useCallback((canvas) => {
-    const layers = [];
+  const init = useCallback((canvas, logoImg) => {
+    const fontSize = 16;
+    const spacing = fontSize * 0.7;
+    const cols = Math.floor(canvas.width / spacing);
+    const rows = Math.ceil(canvas.height / fontSize);
 
-    // Background layer: small, dim
-    const bgFontSize = 14;
-    const bgCols = Math.floor(canvas.width / bgFontSize);
-    const bgRows = Math.ceil(canvas.height / bgFontSize);
-    layers.push({
-      fontSize: bgFontSize,
-      columns: bgCols,
-      drops: Array.from({ length: bgCols }, () => bgRows + Math.random() * 60),
-      speeds: Array.from({ length: bgCols }, () => 0.1 + Math.random() * 0.15),
-      headColor: 'rgba(160, 160, 160, 0.9)',
-    });
-
-    // Middle layer: medium
-    const mdFontSize = 26;
-    const mdCols = Math.floor(canvas.width / mdFontSize);
-    const mdRows = Math.ceil(canvas.height / mdFontSize);
-    layers.push({
-      fontSize: mdFontSize,
-      columns: mdCols,
-      drops: Array.from({ length: mdCols }, () => mdRows + Math.random() * 40),
-      speeds: Array.from({ length: mdCols }, () => 0.15 + Math.random() * 0.2),
-      headColor: 'rgba(200, 200, 200, 1)',
-    });
-
-    // Foreground layer: large, bright
-    const fgFontSize = 50;
-    const fgCols = Math.floor(canvas.width / fgFontSize);
-    const fgRows = Math.ceil(canvas.height / fgFontSize);
-    layers.push({
-      fontSize: fgFontSize,
-      columns: fgCols,
-      drops: Array.from({ length: fgCols }, () => fgRows + Math.random() * 20),
-      speeds: Array.from({ length: fgCols }, () => 0.08 + Math.random() * 0.12),
-      headColor: '#ffffff',
-    });
-
-    // Pre-generate persistent characters for each layer/column/trail
-    const trailLen = 12;
-    const chars = layers.map((layer) =>
-      Array.from({ length: layer.columns }, () =>
-        Array.from({ length: trailLen }, () =>
-          BINARY[Math.floor(Math.random() * BINARY.length)]
-        )
-      )
+    // Persistent binary grid characters
+    const chars = Array.from({ length: rows + 30 }, () =>
+      Array.from({ length: cols }, () => BINARY[Math.floor(Math.random() * 2)])
     );
-    charsRef.current = chars;
 
-    layersRef.current = layers;
+    // Column animation settings
+    const columns = Array.from({ length: cols }, () => ({
+      y: rows + Math.random() * rows,
+      speed: 0.22 + Math.random() * 0.28,
+    }));
+
+    // Create high-resolution temporary canvas to draw the shield logo mask
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tempCtx = tempCanvas.getContext('2d');
+
+    // Render Logo Mask Only
+    tempCtx.fillStyle = '#ffffff';
+    tempCtx.fillRect(0, 0, canvas.width, canvas.height);
+    if (logoImg && logoImg.complete) {
+      const headH = canvas.height * 1.25;
+      const headW = headH; // square aspect ratio
+      const cx = (canvas.width - headW) / 2;
+      const cy = (canvas.height - headH) / 2;
+      tempCtx.drawImage(logoImg, cx, cy, headW, headH);
+    }
+
+    const logoImgData = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
+    const logoMask = new Float32Array(cols * rows);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const px = Math.floor(c * spacing + spacing / 2);
+        const py = Math.floor(r * fontSize + fontSize / 2);
+
+        if (px >= 0 && px < canvas.width && py >= 0 && py < canvas.height) {
+          const idx = (py * canvas.width + px) * 4;
+          const averageColor = (logoImgData.data[idx] + logoImgData.data[idx + 1] + logoImgData.data[idx + 2]) / 3;
+          logoMask[r * cols + c] = averageColor < 120 ? 1.0 : 0.0;
+        } else {
+          logoMask[r * cols + c] = 0;
+        }
+      }
+    }
+
+    dataRef.current = { fontSize, spacing, cols, rows, chars, columns, logoMask };
   }, []);
 
   useEffect(() => {
@@ -69,95 +70,128 @@ export default function MatrixRain() {
     const ctx = canvas.getContext('2d');
     let frameCount = 0;
 
-    const resize = () => {
-      const parent = canvas.parentElement;
-      canvas.width = parent.offsetWidth;
-      canvas.height = parent.offsetHeight;
-      initLayers(canvas);
-    };
+    const logoImg = new Image();
+    logoImg.src = '/img/favicon.png';
 
-    resize();
-    window.addEventListener('resize', resize);
+    const initAndStart = () => {
+      const resize = () => {
+        const parent = canvas.parentElement;
+        canvas.width = parent.offsetWidth;
+        canvas.height = parent.offsetHeight;
+        init(canvas, logoImg);
+      };
 
-    const trailLen = 12;
+      resize();
+      window.addEventListener('resize', resize);
 
-    const draw = () => {
-      frameCount++;
+      const draw = () => {
+        frameCount++;
+        const d = dataRef.current;
+        if (!d) {
+          animationRef.current = requestAnimationFrame(draw);
+          return;
+        }
 
-      // Clear canvas fully each frame with solid black
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const { fontSize, spacing, cols, rows, chars, columns, logoMask } = d;
 
-      ctx.shadowBlur = 0;
-      ctx.shadowColor = 'transparent';
+        // Draw pure black background
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Slowly swap characters every ~10 frames (~0.17s at 60fps)
-      const shouldSwap = frameCount % 3 === 0;
+        ctx.font = `${fontSize}px monospace`;
+        ctx.textBaseline = 'top';
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
 
-      for (let li = 0; li < layersRef.current.length; li++) {
-        const layer = layersRef.current[li];
-        ctx.font = `${layer.fontSize}px monospace`;
-
-        for (let i = 0; i < layer.columns; i++) {
-          const x = i * layer.fontSize;
-          const baseY = layer.drops[i] * layer.fontSize;
-
-          // Randomly swap one character in this column's trail
-          if (shouldSwap && charsRef.current) {
-            const swapIdx = Math.floor(Math.random() * trailLen);
-            charsRef.current[li][i][swapIdx] =
-              BINARY[Math.floor(Math.random() * BINARY.length)];
+        // Slowly swap characters in the main rain every 3 frames
+        if (frameCount % 3 === 0) {
+          for (let r = 0; r < chars.length; r++) {
+            if (Math.random() < 0.1) {
+              const c = Math.floor(Math.random() * cols);
+              chars[r][c] = BINARY[Math.floor(Math.random() * 2)];
+            }
           }
+        }
 
-          for (let t = 0; t < trailLen; t++) {
-            const y = baseY + t * layer.fontSize;
-            if (y < 0 || y > canvas.height + layer.fontSize) continue;
+        // Draw the digital rain matrix cells
+        for (let col = 0; col < cols; col++) {
+          const x = col * spacing;
+          const colData = columns[col];
+          const headRow = Math.floor(colData.y);
 
-            const char =
-              charsRef.current && charsRef.current[li] && charsRef.current[li][i]
-                ? charsRef.current[li][i][t]
-                : '0';
+          for (let row = 0; row < rows; row++) {
+            const y = row * fontSize;
+            const maskVal = logoMask[row * cols + col];
 
-            const alpha = 1 - t / trailLen;
+            // Dist from rising head controls fading
+            const distFromHead = row - headRow;
+            const inTrail = distFromHead >= 0 && distFromHead < 25;
+            const trailFade = inTrail ? (1 - distFromHead / 25) : 0;
 
-            if (t === 0) {
-              ctx.fillStyle = layer.headColor;
+            const charRow = (row + Math.floor(colData.y * 0.4)) % chars.length;
+            const char = chars[Math.abs(charRow)][col];
+
+            // If inside the Covertia shield mask lines, render with high-contrast transparent colors
+            if (maskVal > 0.15) {
+              const b = maskVal * (inTrail ? (1 + 0.4 * trailFade) : 0.8);
+              
+              if (b > 0.75) {
+                // Glowing white-cyan head of column on mask (reduced opacity for transparency)
+                ctx.shadowBlur = 3;
+                ctx.shadowColor = `rgba(0, 210, 255, ${b * 0.4})`;
+                const r = Math.floor(180 + 75 * (b - 0.75) * 4);
+                const g = Math.min(255, Math.floor(230 + 25 * (b - 0.75) * 4));
+                ctx.fillStyle = `rgba(${r}, ${g}, 255, 0.55)`;
+              } else {
+                // Vivid cyan body on mask (reduced opacity for transparency)
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = `rgba(0, 180, 240, ${b * 0.4})`;
+              }
+            } else if (inTrail) {
+              // Regular background columns rising (clearly visible but darker/dimmer)
+              ctx.shadowBlur = 0;
+              ctx.fillStyle = `rgba(0, 100, 200, ${trailFade * 0.45})`;
             } else {
-              const gray =
-                li === 2
-                  ? Math.floor(180 * alpha)
-                  : li === 1
-                    ? Math.floor(140 * alpha)
-                    : Math.floor(100 * alpha);
-              ctx.fillStyle = `rgba(${gray}, ${gray}, ${gray}, ${alpha})`;
+              // Faint background binary static noise
+              ctx.shadowBlur = 0;
+              ctx.fillStyle = `rgba(0, 60, 120, 0.06)`;
             }
 
             ctx.fillText(char, x, y);
           }
 
-          // Move upward
-          layer.drops[i] -= layer.speeds[i];
-
-          // Reset when head is off the top
-          const rows = Math.ceil(canvas.height / layer.fontSize);
-          if (baseY < -layer.fontSize * trailLen && Math.random() > 0.98) {
-            layer.drops[i] = rows + Math.random() * 10;
+          // Rise upward
+          colData.y -= colData.speed;
+          if (colData.y < -25) {
+            colData.y = rows + Math.random() * 15;
           }
         }
-      }
 
-      animationRef.current = requestAnimationFrame(draw);
+        animationRef.current = requestAnimationFrame(draw);
+      };
+
+      draw();
+
+      return () => {
+        window.removeEventListener('resize', resize);
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+      };
     };
 
-    draw();
+    if (logoImg.complete) {
+      initAndStart();
+    } else {
+      logoImg.onload = initAndStart;
+    }
 
     return () => {
-      window.removeEventListener('resize', resize);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [initLayers]);
+  }, [init]);
 
   return (
     <canvas
