@@ -1,0 +1,162 @@
+---
+sidebar_position: 1
+title: Tasks
+description: Tasks Scheduling and Management Guide
+---
+
+# Tasks
+
+Tasks allow you to schedule automation workflows to run automatically at specific times or intervals.
+
+---
+
+## Tasks Dashboard
+
+The **Tasks** dashboard provides an overview of all scheduled tasks, their run states, and quick action controls.
+
+---
+
+### Dashboard Controls
+
+#### OFF / ON Toggle
+Main switch to turn the background task scheduling engine on or off.
+
+#### Filter Dropdown
+Filter tasks by a specific workflow (e.g., `All`, `s`, `Chrome - Don't allow notification v1`, `Facebook KM V6.0.5`, `(Auto Login) Facebook Www (Set 2)`).
+
+#### Search for task name
+Text input box to search tasks by name.
+
+#### Delete all
+Button to delete all task records in bulk.
+
+#### + Create task
+Button used to open the task creation dialog.
+
+---
+
+### Tasks Table
+
+#### Table Columns
+
+* **Checkbox**: Select rows for bulk actions.
+* **WORKFLOW**: The workflow script assigned to the task.
+* **NOTE**: Custom notes for the task (click **Add note...** to edit).
+* **SCHEDULE**: The execution frequency type (e.g. `Once` badge).
+* **TIME**: Shows duration parameters.
+* **NEXT RUN**: Time remaining or date of the next trigger.
+* **STATUS**: Current run status of the task (e.g., `Expired` badge).
+* **MESSAGE**: Execution outcome message (e.g., `Success`).
+
+#### Actions
+
+* **Play/Pause Toggle**: Turn the individual task schedule on or off.
+* **Run Button (Play)**: Manually execute the task immediately.
+* **Options Menu (...)**: Opens a popup menu with the following choices:
+  * **Schedule History**: View the history of past schedule executions.
+  * **Edit**: Open the schedule configuration dialog.
+  * **Delete**: Remove the scheduled task from the dashboard.
+
+---
+
+## Create / Edit Task
+
+Clicking the **+ Create task** button or selecting **Edit** from a task's options menu opens the **Edit Schedule** configuration dialog.
+
+---
+
+### Schedule Tab
+
+Configure execution triggers and script processes:
+
+#### Process
+Dropdown menu to select the workflow automation process to run.
+
+#### Execution Frequency
+Define how often the task should repeat:
+* **Immediate**: Run immediately upon creation.
+* **Once**: Execute one time at a scheduled time.
+* **Interval**: Run repeatedly at fixed time gaps.
+* **Every day**: Run once daily at a specific hour.
+
+#### Starting Time
+Specify the exact date and time to start the task.
+* **Format**: `Month/Day/Year Hour:Minute`
+* **Rule**:
+  > [!IMPORTANT]
+  > The scheduled starting time must be greater than **2 minutes** from the current system time.
+
+#### Next run
+Displays the calculated timestamp for the task's next automated execution.
+
+#### Parameters Input
+Field to pass custom variable parameters to the workflow script.
+
+---
+
+### Profiles Tab
+
+Assign and filter target browser profiles for the task:
+
+#### Chrome arguments
+Custom command line parameters to pass to the browser engine (e.g., `argument1=abc;argument2=xyz`).
+
+#### Search
+Search for profiles by entering keywords.
+
+#### Filter with ids
+Filter target profiles by inputting unique IDs (e.g., `1,2,3`).
+
+#### Profile group
+Dropdown to filter target profiles by group (e.g., `All`).
+
+#### Selected profiles
+Displays the count of profiles assigned to the task and lists them in a table with columns `#`, `ID`, `NAME`, and `GROUP`.
+
+---
+
+### Configuration Tab
+
+Configure execution threads, window layouts, and runtime options:
+
+#### Number of concurrent threads
+The maximum number of profiles to execute simultaneously (Default: `10`).
+
+#### Scale
+Sets the zoom/display scale factor of browser windows (Default: `0.7`).
+
+#### Window layout
+Specify grid rows and columns to arrange browser windows on your screen (e.g., `2` Rows x `5` Columns).
+
+#### Open time between profiles (ms)
+Millisecond delay time before launching the next browser profile window (Default: `300`).
+
+#### Numbers of Repeat
+Set how many times the task should repeat (Default: `0`).
+
+#### Checkbox Options
+* **Custom size**: Toggle custom width and height dimensions for windows (e.g., `800` x `600`).
+* **Auto scale**: Automatically resize browser windows to fit the screen.
+* **Close browser after completion**: Close browser windows once the task is finished.
+* **Check Ip at start**: Verify the proxy IP location before launching.
+* **Display error details**: Output detailed logs if execution fails.
+
+---
+
+### Network Tab
+
+Configure IP and proxy routing during execution:
+
+#### Change Ip option
+Select the proxy/IP rotation behavior from the dropdown menu:
+* **Do not change IP**: Keep the profile's current IP assignment.
+* **Proxy**: Routing via a static proxy.
+* **Rotation proxy**: Utilize a rotating proxy to switch IPs during runs.
+
+---
+
+### Dialog Actions
+
+* **Save**: Save your configuration changes.
+* **Cancel**: Discard changes and close the dialog.
+
