@@ -1,0 +1,98 @@
+---
+sidebar_position: 4
+title: Database
+description: Manage structured tables, global variables, and secure credentials.
+---
+
+# Database Management
+
+The **Database** module in Covertia provides a centralized storage engine to manage all dynamic data required by your browser automation workflows. It is divided into three functional areas:
+
+| Area | Purpose | Best Used For |
+| :--- | :--- | :--- |
+| **Tables** | Structured data collections organized in rows and columns. | Account lists, scraper outputs, target profiles mappings. |
+| **Variables** | Global or script-specific key-value pairs. | Custom execution parameters, constant flags, dynamic values. |
+| **Credentials** | Secured key storage with encrypted or masked values. | Passwords, API tokens, sensitive configurations. |
+
+---
+
+## Tables Management
+
+Tables allow you to store structured datasets. You can query, insert, and delete rows within these tables during script execution.
+
+### Dashboard Overview
+
+* **Search**: Filter your tables instantly by typing in the search box.
+* **+ Add table**: Opens the schema designer dialog.
+* **Table Columns**:
+  * `NAME`: The identifier of the table (e.g., `Covertia`).
+  * `CREATED AT` / `MODIFIED AT`: Creation and update timestamps.
+  * `ROWS`: A clickable badge displaying the count of records. Click it to view and edit individual rows.
+  * `Action (Trash Icon)`: Permanently deletes the table and all its contents.
+
+### Designing a Table Schema
+
+When creating or editing a table, you can define its columns and data types in the **Add table** dialog:
+
+| Configuration Field | Description |
+| :--- | :--- |
+| **Table name** | Unique name to identify the table in your workflow scripts. |
+| **Columns** | Click the **+** icon to add fields. Use the handle (`:::`) to drag and reorder, or the trash icon to delete. |
+| **Data Types** | Choose one of the following for each column:<br/>• `Any`: Accepts any dynamic format.<br/>• `Text`: Standard character strings.<br/>• `Number`: Numeric values (integers/decimals).<br/>• `Boolean`: True/False values.<br/>• `Array`: Structured lists. |
+
+---
+
+## Variables Management
+
+Variables store dynamic settings or runtime values that you want to reference across different execution threads.
+
+### Dashboard Overview
+
+* **+ Add variable**: Opens the variable creation dialog.
+* **Variable Columns**:
+  * `NAME`: Unique key name used to reference the variable in scripts.
+  * `VALUE`: The stored value (supports multi-line text).
+  * `Action (Trash Icon)`: Deletes the variable.
+
+### Variable Fields
+
+| Field | Description |
+| :--- | :--- |
+| **Name** | Key identifier (e.g., `Covertia`). |
+| **Value** | Multi-line text area to store the variable's value. |
+
+---
+
+## Credentials Management
+
+Credentials provide secure storage for sensitive data, ensuring passwords and keys are handled safely during browser actions.
+
+### Dashboard Overview
+
+* **+ Add credential**: Opens the credentials creation dialog.
+* **Credential Columns**:
+  * `NAME`: Identifier label for the credentials.
+  * `VALUE`: Secure credential payload.
+  * `CREATED DATE`: Timestamp indicating when the credential was added.
+  * `Action (Trash Icon)`: Deletes the credential.
+
+### Credential Fields
+
+| Field | Description |
+| :--- | :--- |
+| **Name** | Key name or label (e.g., `Covertia`). |
+| **Value** | Secure field to input passwords, private keys, or API tokens. |
+
+---
+
+## Best Practices
+
+> [!TIP]
+> **Data Type Consistency**
+> Always select the most specific data type (e.g., `Number` or `Boolean`) for table columns to prevent type conversion errors inside your automation scripts.
+
+> [!WARNING]
+> **Irreversible Deletion**
+> Deleting a table, variable, or credential is permanent. Make sure to back up or verify dependencies before deleting records, especially if active tasks depend on them.
+
+

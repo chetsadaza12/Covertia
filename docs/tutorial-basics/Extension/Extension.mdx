@@ -1,0 +1,90 @@
+---
+sidebar_position: 6
+title: Extension
+description: Manage and store Chrome browser extensions for your profiles.
+---
+
+# Extension Management
+
+The **Extension** module in Covertia allows you to manage browser extensions across your profiles. You can add extensions directly from the featured Store, search for Chrome Web Store extensions, or upload custom local CRX packages.
+
+---
+
+## Extension Dashboard
+
+The Extension panel is split into two main tabs:
+
+*   **Manage Extension**: View, enable/disable, refresh, or remove extensions already added to your environment.
+*   **Store Extension**: Browse and search featured Chrome extensions to add to your collection.
+
+---
+
+## Manage Extension
+
+This section displays all extensions currently linked to your workspace.
+
+### Controls and Features
+
+*   **Search**: Filter extensions by typing in the search box on the top right.
+*   **Custom Upload Button (Upload Icon)**: Opens the dialog to upload custom extension packages or URLs.
+*   **Extension Cards**: Each card contains details for a specific extension:
+    *   **Icon and Name**: Shows the extension's brand logo and name (e.g., `Google Translate`).
+    *   **ID**: The unique Chrome Web Store identifier (e.g., `nio***igg`).
+    *   **Description**: Short summary of what the extension does.
+    *   **Source**: The origin of the extension (e.g., `Chrome Web Store`).
+    *   **Toggle Switch**: Enable or disable the extension globally for profiles.
+    *   **Refresh Button (Reload Icon)**: Synchronize or update the extension.
+
+---
+
+## Store Extension
+
+The **Store Extension** tab provides a selection of pre-loaded extensions that can be added to your profile environments with a single click.
+
+### Store Controls
+
+*   **Search**: Query specific extensions by typing keywords in the store search bar.
+*   **Store Cards**:
+    *   **Add Button**: Install the extension into your list.
+    *   **Name & ID**: Basic identification info.
+    *   **Rating Stars**: Community rating (e.g., out of 5 stars).
+
+---
+
+## Custom Extension Upload
+
+Clicking the **Upload Button** (`^` icon) opens the **Select file** dialog. This allows you to add custom extensions that are not hosted on the default store.
+
+### Installation Package Types
+
+You can upload custom extensions using two methods:
+
+#### 1. File Upload Mode (CRX/Zip)
+
+| Configuration Field | Description |
+| :--- | :--- |
+| **Extension path** | The directory path or local CRX/ZIP file of the extension. Click the **Select file** button to browse files on your computer. |
+| **Introduction** | (Optional) Add a custom description or notes for the extension. |
+
+#### 2. URL Import Mode
+
+| Configuration Field | Description |
+| :--- | :--- |
+| **URL of Extension** | The web URL pointing to the extension package hosted online. |
+
+#### Dialog Actions
+*   **OK**: Confirm installation.
+*   **Cancel**: Discard changes.
+
+---
+
+## Best Practices
+
+> [!TIP]
+> **Ad-Blockers and Performance**
+> Installing ad-blockers or scripts can sometimes block automation selectors or interfere with page loads. Be sure to test workflows with extensions disabled if you encounter unexpected script breaks.
+
+> [!WARNING]
+> **Extension Compatibility**
+> Custom extensions must be compatible with the Chromium engine version configured in your profiles. Outdated CRX packages may cause profiles to crash or fail to launch.
+

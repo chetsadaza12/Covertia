@@ -1,0 +1,68 @@
+---
+sidebar_position: 2
+title: Automation Settings
+description: Configure default automation execution parameters, thread counts, and window layouts.
+---
+
+# Automation Settings
+
+The **Automation Settings** panel allows you to configure global default parameters for running automated tasks. These settings serve as the baseline configuration whenever you execute a new workflow.
+
+---
+
+## Log Settings
+
+Manage the storage limits and retention policy for automation execution logs:
+
+| Setting | Description | Default / Options |
+| :--- | :--- | :--- |
+| **Auto-delete workflow logs** | The duration to retain workflow execution logs before automatic deletion. | Dropdown list (e.g. `60 days`) |
+| **Logs limit** | The maximum number of historical log records to retain per workflow template. | Numeric input (e.g. `1` log) |
+
+---
+
+## Thread & Scale Controls
+
+Configure the performance load and browser window dimensions during task execution:
+
+| Setting | Description | Default / Options |
+| :--- | :--- | :--- |
+| **Number of concurrent threads** | The default number of browser profiles to execute simultaneously. | Numeric input (e.g. `10` threads) |
+| **Scale** | Default zoom/scale multiplier factor for opened browser windows. | Decimal input (e.g. `0.5`) |
+
+---
+
+## Layout & Timing
+
+Define screen positioning grid layouts and profile launch delays:
+
+| Setting | Description | Default / Options |
+| :--- | :--- | :--- |
+| **Window size** | The default grid layout for arranging browser windows on the screen. Specified as Row count and Column count. | Row input and Column input (e.g., `2` Rows x `5` Columns) |
+| **Open time between profiles (ms)** | Delay time (in milliseconds) before launching the next browser profile in sequence. | Numeric input (e.g. `300` ms) |
+
+---
+
+## Network & Repetition Settings
+
+Define proxy rotation and repetition behaviors:
+
+| Setting | Description | Default / Options |
+| :--- | :--- | :--- |
+| **Change Ip option** | Default proxy configuration and IP rotation behavior. | Dropdown list (e.g. `Do not change IP`) |
+| **Numbers of Repeat** | The number of times the workflow task should repeat upon completion. | Numeric input (e.g. `0` for no repeat) |
+
+---
+
+## Additional Options
+
+Select baseline toggles for security and profile window behavior:
+
+*   **Check Ip at start**: Verify the proxy IP address and connection stability before launching browser profile windows.
+*   **Close browser after completion**: Automatically close the browser windows once the workflow script completes execution.
+
+---
+
+## Save Configuration
+
+Click the **Save** button at the bottom of the panel to apply changes. These defaults will be utilized for all future automation task setups.

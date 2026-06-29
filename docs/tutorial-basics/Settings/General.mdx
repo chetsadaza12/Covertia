@@ -1,0 +1,55 @@
+---
+sidebar_position: 1
+title: General Settings
+description: Configure theme preferences, browser engines, and profile storage locations.
+---
+
+# General Settings
+
+The **General Settings** panel allows you to configure system-wide interface preferences, download and maintain the browser engine cores, and manage the local directory path where your profile files are stored.
+
+---
+
+## Interface Preferences
+
+Configure visual and display properties of the application:
+
+| Setting | Description | Options |
+| :--- | :--- | :--- |
+| **Theme** | Set the appearance mode of the application interface. | `Light`, `Dark` |
+| **Language** | Select the default display language for all menus and options. | Dropdown list (e.g. `English`, `Thai`) |
+| **Compact Navigation** | Toggle compact menu mode to group related items together in collapsible sections. | Switch toggle (On/Off) |
+
+---
+
+## Browser Engine Management
+
+Download, reinstall, or clean up the underlying browser engines used to run automated profiles.
+
+> [!WARNING]
+> **Active Profiles Notice**
+> Always close and turn off all running browser profiles before installing, reinstalling, or updating browser configurations.
+
+### Configuration Fields
+
+| Setting / Action | Description |
+| :--- | :--- |
+| **Browser** | Select the target web browser core engine to manage (e.g. `Chrome Browser`). |
+| **Version** | Select the specific browser version release (e.g. `141`). |
+| **Reinstall** | Redownload and install the selected browser version from scratch. |
+| **Update Config** | Apply updated configuration parameters to the selected browser build. |
+| **Clean profiles folder** | Clear temporary cache files, crash dumps, and logs within the browser engine directories to free up disk space. |
+
+---
+
+## Storage Location
+
+Manage where all browser profiles (including cookies, cache, and session data) are stored on your local drive.
+
+### Directory Configuration
+
+*   **Storage Location Input**: Displays the absolute local path to your profiles folder (e.g. `D:\โปรแกรม\Profiles`). Click the folder icon button next to the input field to select a new folder on your computer.
+*   **Actions**:
+    *   **Use selected path**: Switch the application to load and save profiles directly from the new location without moving existing files.
+    *   **Copy profiles to selected path**: Copy all profiles currently saved in the old folder over to the newly selected directory path.
+*   **Save**: Confirm path modifications and apply changes.

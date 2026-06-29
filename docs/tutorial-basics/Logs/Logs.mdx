@@ -1,0 +1,102 @@
+---
+sidebar_position: 5
+title: Logs
+description: Monitor execution logs, step-by-step debug actions, and script variables.
+---
+
+# Execution Logs
+
+The **Logs** dashboard provides a comprehensive debugging and monitoring panel. Here you can inspect the performance, outcomes, and step-by-step logs of all automation workflows executed on your browser profiles.
+
+---
+
+## Logs Dashboard
+
+The main Logs dashboard lists past and present workflow execution records.
+
+### Dashboard Controls
+
+| Control | Description |
+| :--- | :--- |
+| **Search for workflow** | Search and filter logs by workflow name. |
+| **Search for profile name** | Search and filter logs by target browser profile name. |
+| **Workflows Dropdown** | Filter execution records to a specific workflow template. |
+| **Sort / Order Button** | Change the sorting direction of the logs list. |
+| **Filter Button** | Apply selected search parameters and filters. |
+| **Clear all** | Delete all log records globally to clean the dashboard. |
+
+### Logs Table
+
+The table contains execution details for each script run:
+
+*   **Checkbox**: Select rows to execute bulk actions.
+*   **WORKFLOW**: Name of the executed workflow script (e.g. `(Auto Login) Facebook Www (Set 2)`).
+*   **PROFILE NAME**: Name of the browser profile that ran the task.
+*   **PROFILE ID**: Unique identifier ID of the browser profile.
+*   **TIME**: Timestamp showing when the execution was started.
+*   **DURATION**: Total run duration of the workflow execution (e.g., `96.19s`).
+*   **STATUS**: Result badge (`Success` in green or `Error` in red).
+*   **Actions**:
+    *   **View Detail (Eye icon)**: Opens the detailed execution logs panel.
+    *   **Delete (Trash icon)**: Deletes the specific execution log record.
+
+---
+
+## Log Details
+
+Clicking the **View Detail (Eye icon)** on any log record opens the execution details workspace. This screen contains three inspection sub-tabs: **Log**, **Variable**, and **Tables**.
+
+### Header Actions
+
+| Action | Description |
+| :--- | :--- |
+| **Back Button (`<-`)** | Returns to the main Logs dashboard. |
+| **Editor** | Opens the selected workflow in the script editor for quick updates and adjustments. |
+| **Delete** | Deletes the current log record. |
+
+---
+
+### Log Tab
+
+The **Log** tab provides a chronologically ordered, step-by-step history of each automation action executed within the workflow.
+
+#### Filters and Views
+*   **Export logs**: Download execution steps as a text file for offline inspection.
+*   **Search**: Search for specific keywords or actions in the log logs.
+*   **Arrange**: Sort log entries (e.g. `Arrange (Oldest)` or `Arrange (Newest)`).
+
+#### Execution Steps Format
+Each log entry displays:
+1.  **Timestamp & Step Duration**: Displays execution time and duration offsets (e.g. `21:27:24 (30.01s)`).
+2.  **Action Status & Name**: Shows whether the step passed (green check icon) or failed (red error icon), and the action name (e.g. `Open URL`, `JavaScript Code`, `Get Info Tabs`).
+3.  **Detailed Message**: Shows outcome messages or error traces (e.g., `Navigation timeout of 30000 ms exceeded` for failed steps).
+
+---
+
+### Variable Tab
+
+The **Variable** tab helps debug variables created, updated, or read during the script execution.
+
+*   **View Modes**: Toggle between **GUI** (grid card layout) and **Raw** (JSON string format).
+*   **Variable Cards**: Displays a grid layout containing the variable keys and values:
+    *   `NAME`: The variable key identifier (e.g. `resource`, `accountinfos`, `specialXpaths`).
+    *   `VALUE`: Structured JSON values or raw text data currently stored in that variable (e.g. login credentials, DOM xpath maps, cookies).
+
+---
+
+### Tables Tab
+
+The **Tables** tab provides visibility into database operations performed during the workflow run. It lists table updates, inserts, or reference logs showing how structured data was queried or manipulated during execution.
+
+---
+
+## Best Practices
+
+> [!TIP]
+> **Debugging Failures**
+> Use the **Log** tab to locate the exact step (e.g. `Open URL`) where a timeout or error occurred. The detailed message column usually points to browser state issues or slow proxy speeds.
+
+> [!WARNING]
+> **Sensitive Variable Outputs**
+> Variables and log outputs in the **Variable** tab may contain raw account login details, passwords, or session cookies. Keep execution logs secure, and delete old log logs regularly.
+
