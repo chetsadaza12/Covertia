@@ -9,7 +9,7 @@ export default function MatrixRain() {
   const dataRef = useRef(null);
 
   const init = useCallback((canvas, logoImg) => {
-    const fontSize = 16;
+    const fontSize = 20;
     const spacing = fontSize * 0.7;
     const cols = Math.floor(canvas.width / spacing);
     const rows = Math.ceil(canvas.height / fontSize);
@@ -22,7 +22,7 @@ export default function MatrixRain() {
     // Column animation settings
     const columns = Array.from({ length: cols }, () => ({
       y: rows + Math.random() * rows,
-      speed: 0.22 + Math.random() * 0.28,
+      speed: 0.13 + Math.random() * 0.17,
     }));
 
     // Create high-resolution temporary canvas to draw the shield logo mask
@@ -103,10 +103,10 @@ export default function MatrixRain() {
         ctx.shadowBlur = 0;
         ctx.shadowColor = 'transparent';
 
-        // Slowly swap characters in the main rain every 3 frames
-        if (frameCount % 3 === 0) {
+        // Slowly swap characters in the main rain every 18 frames
+        if (frameCount % 18 === 0) {
           for (let r = 0; r < chars.length; r++) {
-            if (Math.random() < 0.1) {
+            if (Math.random() < 0.15) {
               const c = Math.floor(Math.random() * cols);
               chars[r][c] = BINARY[Math.floor(Math.random() * 2)];
             }
@@ -148,13 +148,13 @@ export default function MatrixRain() {
                 ctx.fillStyle = `rgba(0, 180, 240, ${b * 0.4})`;
               }
             } else if (inTrail) {
-              // Regular background columns rising (clearly visible but darker/dimmer)
+              // Regular background columns rising (clearly visible gray digits)
               ctx.shadowBlur = 0;
-              ctx.fillStyle = `rgba(0, 100, 200, ${trailFade * 0.45})`;
+              ctx.fillStyle = `rgba(130, 130, 130, ${trailFade * 0.45})`;
             } else {
-              // Faint background binary static noise
+              // Faint background binary static noise (faint gray digits)
               ctx.shadowBlur = 0;
-              ctx.fillStyle = `rgba(0, 60, 120, 0.06)`;
+              ctx.fillStyle = `rgba(80, 80, 80, 0.06)`;
             }
 
             ctx.fillText(char, x, y);

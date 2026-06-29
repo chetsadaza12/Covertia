@@ -49,3 +49,51 @@
 .navbar__logo {
   height: 54px;
 }
+
+/* Homepage Immersive Transparent Navbar & Footer */
+body.homepage-layout .navbar {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-bottom: none !important;
+  z-index: 10;
+}
+
+/* Ensure navbar items contrast well on dark background */
+body.homepage-layout .navbar__link,
+body.homepage-layout .navbar__title,
+body.homepage-layout .navbar__toggle {
+  color: #ffffff !important;
+}
+
+body.homepage-layout .footer {
+  position: absolute !important;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%) !important;
+  border-top: none !important;
+  z-index: 10;
+  padding: 1.5rem 0 !important;
+}
+
+body.homepage-layout .footer__links {
+  display: none !important; /* Hides all footer links columns on the homepage */
+}
+
+body.homepage-layout .footer__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  border-top: none !important; /* Removes separator line since links are hidden */
+}
+
+body.homepage-layout .footer__copyright {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.45) !important;
+}

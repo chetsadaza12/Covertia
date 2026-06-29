@@ -5,7 +5,8 @@
 
 .heroBanner {
   position: relative;
-  min-height: 75vh;
+  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,18 +28,19 @@
   z-index: 1;
   width: 100%;
   max-width: none !important; /* Forces container to span full viewport width */
-  min-height: 75vh;
+  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
+  padding: 6rem 2rem 5rem 2rem;
   text-align: center;
 }
 
 .heroTextWrapper {
   max-width: 800px;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .heroTextWrapper h1 {
@@ -65,29 +67,15 @@
 }
 
 .heroButtonWrapper {
-  position: absolute;
-  bottom: 3.2rem; /* Moves the button down slightly to increase spacing from the text above */
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 1rem;
   z-index: 3;
 }
 
 @media screen and (max-width: 996px) {
-  .heroBanner {
-    min-height: 60vh;
-  }
-  .heroContainer {
-    min-height: 60vh;
-    padding: 3rem 1.5rem;
-  }
   .heroTextWrapper h1 {
     font-size: 2.6rem;
   }
   .heroTextWrapper p {
     font-size: 1.15rem;
-  }
-  .heroButtonWrapper {
-    position: static;
-    transform: none;
   }
 }
