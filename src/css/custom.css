@@ -6,27 +6,43 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  /* Brand color variations (Primary) - Black (#111111) */
+  --ifm-color-primary: #111111;
+  --ifm-color-primary-dark: #1a1a1a;
+  --ifm-color-primary-darker: #0f0f0f;
+  --ifm-color-primary-darkest: #000000;
+  --ifm-color-primary-light: #222222;
+  --ifm-color-primary-lighter: #2a2a2a;
+  --ifm-color-primary-lightest: #333333;
+
+  /* Background colors in Light Mode - Light Gray (#F0F0F0) and White (#FFFFFF) */
+  --ifm-background-color: #F0F0F0;
+  --ifm-navbar-background-color: #FFFFFF;
+  --ifm-card-background-color: #FFFFFF;
+  --ifm-hover-overlay: rgba(0, 0, 0, 0.05);
+
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  /* Brand color variations in Dark Mode (Primary) - White (#F5F5F5 / #FFFFFF) */
+  --ifm-color-primary: #FFFFFF;
+  --ifm-color-primary-dark: #F5F5F5;
+  --ifm-color-primary-darker: #EAEAEA;
+  --ifm-color-primary-darkest: #CCCCCC;
+  --ifm-color-primary-light: #FFFFFF;
+  --ifm-color-primary-lighter: #FFFFFF;
+  --ifm-color-primary-lightest: #FFFFFF;
+
+  /* Background colors in Dark Mode - Black (#111111 / #1A1A1A) */
+  --ifm-background-color: #111111;
+  --ifm-navbar-background-color: #1A1A1A;
+  --ifm-card-background-color: #1A1A1A;
+  --ifm-hover-overlay: rgba(255, 255, 255, 0.05);
+
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.1);
 }
 
 /* Custom Navbar Logo Size */
