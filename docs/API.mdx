@@ -1,0 +1,184 @@
+---
+sidebar_position: 4
+sidebar_label: Developer/API
+title: Core API Reference
+description: API documentation for managing browser profiles, groups, scripts, and automation cores in Covertia.
+---
+
+# Core API Reference
+
+The Covertia Core API provides HTTP operations to manage profiles, groups, scripts, and locations programmatically. It allows developer integrations to control browser profiles, launch instances, and execute automation scripts via external tools.
+
+---
+
+## Connection Settings
+
+All requests should be sent to the local Covertia service base URL:
+
+| Server Environment | Base URL |
+| :--- | :--- |
+| **Local API Server** | `http://localhost:1010` |
+
+---
+
+## Versions API
+
+Operations related to browser engine versions:
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/browser_versions` | Retrieve a list of browser versions available in the system. |
+
+---
+
+## Groups API
+
+Operations related to profile groups:
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/groups` | Retrieve a list of all custom profile groups. |
+
+---
+
+## Locations API
+
+Operations related to geographic location parameters:
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/locations` | Retrieve a list of supported geolocation parameters. |
+
+---
+
+## Profiles API
+
+Operations related to creating, starting, closing, updating, and deleting browser profiles:
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/profiles` | Retrieve a list of all browser profiles. |
+| `GET` | `/api/profile/{id}` | Retrieve configuration details of a specific profile by ID. |
+| `POST` | `/api/profiles/create` | Create a new browser profile with custom fingerprints. |
+| `POST` | `/api/profiles/update/{profile_id}` | Update configuration parameters for an existing profile. |
+| `GET` | `/api/profiles/start/{id}` | Launch a browser instance for the specified profile ID. |
+| `GET` | `/api/profiles/close/{id}` | Close a running browser instance by profile ID. |
+| `POST` | `/api/profiles/check-status/{id}` | Check the execution status (running/closed) of a profile. |
+| `GET` | `/api/profiles/changeFingerprint` | Batch change fingerprints for specified profiles. |
+| `POST` | `/api/profiles/resource/{id}` | Update assigned resources for a specific profile. |
+| `GET` | `/api/profiles/delete/{id}` | Permanently delete a profile record by ID. |
+
+---
+
+## Scripts & Automation API
+
+Operations related to workflow scripts and execution control:
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/scripts` | Retrieve a list of all available automation scripts. |
+| `POST` | `/api/scripts/execute/{id}` | Execute an automation script on targeted profiles by script ID. |
+| `POST` | `/api/scripts/check-status/{id}` | Check the current run status of an executed script. |
+| `POST` | `/api/scripts/kill-execute/{id}` | Force terminate a running script execution. |
+
+---
+
+## Data Schemas
+
+The following sections define the data models transferred during API requests and responses.
+
+### BrowserVersion
+
+Represents the browser engine version:
+
+| Field | Type | Description | Example |
+| :--- | :--- | :--- | :--- |
+| `id` | `integer` | Unique identifier. | `1` |
+| `version` | `string` | Major version number. | `"136"` |
+
+---
+
+### OsVersion
+
+Represents the operating system configuration:
+
+| Field | Type | Description | Allowed Values / Examples |
+| :--- | :--- | :--- | :--- |
+| `osType` | `string` | Target operating system. | `"Windows"`, `"macOS"`, `"Android"`, `"iOS"`, `"Linux"` |
+| `version` | `string` | Target OS version string. | `"win10"`, `"win11"`, `"macos13"`, `"android13"`, `"ios15"`, `"all_linux"` |
+
+---
+
+### Group
+
+Represents a browser profile group:
+
+| Field | Type | Description | Example |
+| :--- | :--- | :--- | :--- |
+| `id` | `string` | Unique identifier for the group. | `"1"` |
+| `name` | `string` | Name of the group. | `"All"` |
+| `createdAt` | `string ($date-time)` | Timestamp of group creation. | `"2023-09-01T12:00:00Z"` |
+| `updatedAt` | `string ($date-time)` | Timestamp of last group update. | `"2023-09-02T12:00:00Z"` |
+
+---
+
+### Location
+
+Represents location parameters used for browser routing:
+
+| Field | Type | Description | Example |
+| :--- | :--- | :--- | :--- |
+| `country` | `string` | Geolocation country name. | `"Vietnam"` |
+| `languages` | `string` | Comma-separated list of locale codes. | `"vi,en"` |
+| `timezones` | `string` | Standard IANA timezone string. | `"Asia/Bangkok"` |
+| `latLng` | `array [string]` | Latitude and Longitude values array. | `["16.16666666", "107.83333333"]` |
+
+---
+
+### Profile
+
+Represents the core configuration of a browser profile:
+
+| Field | Type | Description | Example |
+| :--- | :--- | :--- | :--- |
+| `id` | `string` | Unique identifier of the profile. | `"1"` |
+| `name` | `string` | Name of the profile. | `"Test profile"` |
+| `raw_proxy` | `string` | Raw proxy settings. | `"host:port:user:pass"` |
+| `browser_type` | `string` | Type of browser kernel. | `"Chrome"` |
+| `browser_version` | `string` | Full version of the browser. | `"136.0.0.0"` |
+| `group_id` | `string` | ID of the group this profile belongs to. | `"1"` |
+| `profile_path` | `string` | Disk path where profile data is saved. | `"wBPmedDpCbL-04122023"` |
+| `note` | `string` | Custom notes for this profile. | `null` |
+| `created_at` | `string ($date-time)` | Timestamp of profile creation. | `"2024-09-04T19:33:30.120Z"` |
+
+---
+
+### Fingerprints
+
+Represents browser hardware and software fingerprint spoofing parameters:
+
+| Field | Type | Description | Values / Examples |
+| :--- | :--- | :--- | :--- |
+| `browser_kernel` | `string` | Kernel used in execution environment. | `"ChromeBrowser [131]"` |
+| `config_user_agent` | `string` | User-agent string sent by the browser. | `"Mozilla/5.0 (Windows NT 10.0;...)"` |
+| `timezone` | `string` | System timezone of the simulated device. | `"Asia/Bangkok"` |
+| `web_rtc` | `string` | WebRTC behavior option. | • `"replace"`: Spoof WebRTC IP with random IP.<br/>• `"real"`: Use real IP.<br/>• `"disabled"`: Disable WebRTC. |
+| `geolocation` | `object` | Latitude, longitude, and accuracy variables. | • `longitude`: `number` (e.g. `105.69`) <br/>• `latitude`: `number` (e.g. `21.42`) <br/>• `accuracy`: `integer` (e.g. `100`) |
+| `language` | `array [string]` | List of preferred browser locales. | `["vi", "en"]` |
+| `screen_resolution` | `string` | Canvas screen resolution mode. | • `"random"`: Spoof random resolution.<br/>• `"custom"`: Specific custom dimensions. |
+| `fonts` | `string` | Font rendering option. | • `"default"`: System fonts.<br/>• `"custom"`: Custom list. |
+| `canvas` | `string` | Canvas fingerprint masking mode. | • `"real"`: Do not mask.<br/>• `"noise"`: Apply random noise to mask. |
+| `webgl_image` | `string` | WebGL image configuration. | • `"real"`: Do not mask.<br/>• `"noise"`: Mask to prevent tracking. |
+| `webgl_metadata` | `string` | WebGL GPU and driver identification. | • `"real"`: Real hardware metadata.<br/>• `"custom"`: Spoof GPU (e.g., `ANGLE (NVIDIA...)`). |
+| `audio_context` | `string` | Audio fingerprint masking mode. | • `"real"`: Do not mask.<br/>• `"noise"`: Apply random noise to mask. |
+| `media_device` | `string` | Media devices listing behavior. | • `"real"`: Real device listings.<br/>• `"noise"`: Mask device identifiers. |
+| `client_rects` | `string` | Client Rects fingerprinting behavior. | • `"real"`: Do not mask.<br/>• `"noise"`: Mask dimensions. |
+| `speech_voices` | `string` | Speech synthesis voices configuration. | • `"real"`: Real voices list.<br/>• `"noise"`: Mask voice list. |
+| `hardware_concurrency`| `integer` | Spoofed CPU logical cores counts. | `2`, `4`, `8`, `10`, `12`, `16`, `20`, `24` |
+| `device_memory` | `integer` | Spoofed device RAM size (in GB). | `2`, `4`, `8`, `10`, `12`, `16`, `20`, `24` |
+| `device_name` | `string` | Device name string. | • `"real"`: Real device name.<br/>• `"custom"`: Spoof (e.g., `DESKTOP-HLUKZ`). |
+| `mac_address` | `string` | Device hardware MAC address. | • `"real"`: Real MAC address.<br/>• `"custom"`: Spoof (e.g., `54:52:00:17:6F:45`). |
+| `do_not_track` | `string` | Do Not Track (DNT) header status. | • `"default"`: Keep system default.<br/>• `"open"`: Enable DNT.<br/>• `"close"`: Disable DNT. |
+| `flash` | `string` | Flash Player enablement status. | • `"accept"`: Enable Flash Player.<br/>• `"decline"`: Disable Flash Player. |
+| `port_scan_protection`| `string` | Protection status against port scanning. | • `"accept"`: Enable protection.<br/>• `"decline"`: Disable protection. |
+| `hardware_acceleration`| `string`| Hardware acceleration enablement status.| • `"default"`: Keep system default.<br/>• `"accept"`: Enable hardware acceleration.<br/>• `"decline"`: Disable hardware acceleration. |
