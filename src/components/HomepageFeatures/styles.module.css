@@ -5,7 +5,18 @@
   width: 100%;
 }
 
+.featureImageContainer {
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
 .featureSvg {
-  height: 200px;
-  width: 200px;
+  max-height: 100%;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  object-fit: contain;
 }

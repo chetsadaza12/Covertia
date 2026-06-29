@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 const FeatureList = [
   {
     title: 'Isolated Profiles',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    imgSrc: require('@site/static/img/isolated-profiles.png').default,
     description: (
       <>
         Create and manage multiple isolated browser profiles. Each profile acts
@@ -15,7 +15,7 @@ const FeatureList = [
   },
   {
     title: 'Advanced Automation',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    imgSrc: require('@site/static/img/advanced-automation.png').default,
     description: (
       <>
         Design, import, and schedule custom workflow scripts. Run automation tasks,
@@ -25,7 +25,7 @@ const FeatureList = [
   },
   {
     title: 'Smart Proxy Routing',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    imgSrc: require('@site/static/img/smart-proxy.png').default,
     description: (
       <>
         Route profile connections securely through static or rotating SOCKS5/HTTP proxies
@@ -35,11 +35,15 @@ const FeatureList = [
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({Svg, imgSrc, title, description}) {
   return (
     <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+      <div className={styles.featureImageContainer}>
+        {imgSrc ? (
+          <img src={imgSrc} className={styles.featureSvg} alt={title} />
+        ) : (
+          <Svg className={styles.featureSvg} role="img" />
+        )}
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>
