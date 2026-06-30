@@ -9,6 +9,7 @@ export default function MatrixRain() {
   const dataRef = useRef(null);
 
   const init = useCallback((canvas, logoImg) => {
+    if (canvas.width === 0 || canvas.height === 0) return;
     const fontSize = 20;
     const spacing = fontSize * 0.7;
     const cols = Math.floor(canvas.width / spacing);
@@ -69,18 +70,28 @@ export default function MatrixRain() {
 
     const ctx = canvas.getContext('2d');
     let frameCount = 0;
+    let resizeTimeout;
+    let resizeHandler = null;
 
     const logoImg = new Image();
     logoImg.src = '/img/favicon.png';
 
-    const initAndStart = () => {
-      const resize = () => {
-        const parent = canvas.parentElement;
-        canvas.width = parent.offsetWidth;
-        canvas.height = parent.offsetHeight;
-        init(canvas, logoImg);
-      };
+    const resize = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      const width = parent.offsetWidth;
+      const height = parent.offsetHeight;
+      if (width === 0 || height === 0) {
+        resizeTimeout = setTimeout(resize, 100);
+        return;
+      }
+      canvas.width = width;
+      canvas.height = height;
+      init(canvas, logoImg);
+    };
 
+    const initAndStart = () => {
+      resizeHandler = resize;
       resize();
       window.addEventListener('resize', resize);
 
@@ -171,13 +182,6 @@ export default function MatrixRain() {
       };
 
       draw();
-
-      return () => {
-        window.removeEventListener('resize', resize);
-        if (animationRef.current) {
-          cancelAnimationFrame(animationRef.current);
-        }
-      };
     };
 
     if (logoImg.complete) {
@@ -187,6 +191,12 @@ export default function MatrixRain() {
     }
 
     return () => {
+      if (resizeHandler) {
+        window.removeEventListener('resize', resizeHandler);
+      }
+      if (resizeTimeout) {
+        clearTimeout(resizeTimeout);
+      }
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }

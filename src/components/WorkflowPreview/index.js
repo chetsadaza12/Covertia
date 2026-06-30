@@ -9,6 +9,7 @@ const BLOCK_ICONS = {
   'riStopLine': { emoji: '⏹', color: '#ffffff', bgColor: '#f85149' },
   'riCursorLine': { emoji: '↖', color: '#ffffff', bgColor: '#3b82f6' },
   'riKeyboardLine': { emoji: '⌨', color: '#ffffff', bgColor: '#3b82f6' },
+  'riTimerLine': { emoji: '⏱', color: '#ffffff', bgColor: '#10b981' },
   'default': { emoji: '⚙', color: '#ffffff', bgColor: '#58a6ff' },
 };
 
@@ -26,6 +27,7 @@ const LABEL_MAP = {
   'press-key': 'Presskey',
   'presskey': 'Presskey',
   'wait': 'Wait',
+  'delay': 'Delay',
   'loop': 'Loop',
   'conditions': 'Conditions',
   'javascript-code': 'JavaScript',
@@ -232,7 +234,7 @@ function BlockNode({
       {/* Output port (right) - drag to create connection */}
       {!isEnd && (
         <circle
-          cx={BLOCK_WIDTH} cy={BLOCK_HEIGHT / 2}
+          cx={BLOCK_WIDTH} cy={hasFallback ? 17 : BLOCK_HEIGHT / 2}
           r={PORT_RADIUS}
           fill="#ffffff"
           stroke="#1a1a1a"
@@ -247,7 +249,7 @@ function BlockNode({
         <>
           {/* Fallback output port (red port, now draggable!) */}
           <circle
-            cx={BLOCK_WIDTH} cy={BLOCK_HEIGHT - 14}
+            cx={BLOCK_WIDTH} cy={43}
             r={PORT_RADIUS}
             fill="#ffffff"
             stroke="#f85149"
@@ -775,6 +777,7 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
   const [activeTab, setActiveTab] = useState(node.data?.active !== false);
   const [timeout, setTimeoutVal] = useState(node.data?.timeout || 0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [time, setTime] = useState(node.data?.time || '5000');
 
   // Mouse Click & Input Text states
   const [selector, setSelector] = useState('');
@@ -866,6 +869,9 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
     setAction(node.data?.action || "Press a key");
     setKey(node.data?.key || "Enter");
     setPressTime(node.data?.pressTime || 0);
+
+    // Delay
+    setTime(node.data?.time || '5000');
 
     // Close dropdowns
     setDropdownOpen(false);
@@ -1674,6 +1680,24 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
               </div>
             </div>
           </>
+        ) : node.label === 'delay' ? (
+          <>
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Delay time (millisecond)</label>
+              <VariableInput
+                placeholder="5000"
+                value={time}
+                onChange={(val) => {
+                  setTime(val);
+                  onUpdate(node.id, 'time', val);
+                }}
+                parameters={parameters}
+              />
+              <div style={{ fontSize: '0.75rem', color: '#57606a', marginTop: '0.4rem', lineHeight: '1.4' }}>
+                Can be a number, or x, y. Example: 2, 5 random n range 2 → 5 for each run. x, y is integer or float
+              </div>
+            </div>
+          </>
         ) : (
           /* Render simple editable fields for other block types */
           Object.entries(node.data || {}).map(([key, value]) => {
@@ -1792,8 +1816,9 @@ export default function WorkflowPreview({ data, height = 580 }) {
     const node = workflowData?.drawflow?.nodes?.find(n => n.id === nodeId);
     if (!node) return;
     const isFallback = portType === 'fallback';
+    const hasFallback = node.type === 'BlockBasicWithFallback';
     const startX = node.position.x + BLOCK_WIDTH;
-    const startY = node.position.y + (isFallback ? (BLOCK_HEIGHT - 14) : (BLOCK_HEIGHT / 2));
+    const startY = node.position.y + (isFallback ? 43 : (hasFallback ? 17 : BLOCK_HEIGHT / 2));
     const svgPos = screenToSvg(e.clientX, e.clientY);
     setConnecting({
       sourceId: nodeId,
@@ -1970,10 +1995,11 @@ export default function WorkflowPreview({ data, height = 580 }) {
     const targetNode = nodes.find(n => n.id === edge.target);
     if (!sourceNode || !targetNode) return null;
     const isFallback = edge.sourceHandle?.includes('fallback');
+    const sourceHasFallback = sourceNode.type === 'BlockBasicWithFallback';
     return {
       id: edge.id,
       x1: sourceNode.position.x + BLOCK_WIDTH,
-      y1: sourceNode.position.y + (isFallback ? (BLOCK_HEIGHT - 14) : (BLOCK_HEIGHT / 2)),
+      y1: sourceNode.position.y + (isFallback ? 43 : (sourceHasFallback ? 17 : BLOCK_HEIGHT / 2)),
       x2: targetNode.position.x,
       y2: targetNode.position.y + BLOCK_HEIGHT / 2,
       isFallback,
