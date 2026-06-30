@@ -323,38 +323,39 @@
 }
 
 .dropdownOptions {
-  position: absolute;
-  left: 0;
-  right: 0;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  margin-top: 5px;
-  z-index: 25;
-  overflow: hidden;
-  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: #ffffff !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  margin-top: 5px !important;
+  z-index: 9999 !important;
+  overflow: hidden !important;
 }
 
 .dropdownOption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.65rem 0.85rem;
-  cursor: pointer;
-  font-size: 0.88rem;
-  color: #2d3748;
-  transition: background 0.15s;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.65rem 0.85rem !important;
+  cursor: pointer !important;
+  font-size: 0.88rem !important;
+  color: #2d3748 !important;
+  background: #ffffff !important;
+  transition: background 0.15s !important;
 }
 
 .dropdownOption:hover {
-  background: #f7fafc;
+  background: #f6f8fa !important;
+  color: #2b6cb0 !important;
 }
 
 .dropdownOptionSelected {
-  background: #f0f4ff;
-  color: #2b6cb0;
-  font-weight: 500;
+  background: #f0f4ff !important;
+  color: #2b6cb0 !important;
+  font-weight: 500 !important;
 }
 
 .infoIcon {
@@ -496,22 +497,25 @@
 }
 
 [data-theme='dark'] .dropdownOptions {
-  background: #161b22;
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  background: #161b22 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
 }
 
 [data-theme='dark'] .dropdownOption {
-  color: #c9d1d9;
+  color: #c9d1d9 !important;
+  background: #161b22 !important;
 }
 
 [data-theme='dark'] .dropdownOption:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: #58a6ff !important;
 }
 
 [data-theme='dark'] .dropdownOptionSelected {
-  background: rgba(88, 166, 255, 0.12);
-  color: #58a6ff;
+  background: rgba(88, 166, 255, 0.12) !important;
+  color: #58a6ff !important;
+  font-weight: 500 !important;
 }
 
 [data-theme='dark'] .infoIcon,

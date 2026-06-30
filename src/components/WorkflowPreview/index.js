@@ -10,6 +10,7 @@ const BLOCK_ICONS = {
   'riCursorLine': { emoji: '↖', color: '#ffffff', bgColor: '#3b82f6' },
   'riKeyboardLine': { emoji: '⌨', color: '#ffffff', bgColor: '#3b82f6' },
   'riTimerLine': { emoji: '⏱', color: '#ffffff', bgColor: '#10b981' },
+  'riClipboardLine': { emoji: '📋', color: '#ffffff', bgColor: '#2ea043' },
   'default': { emoji: '⚙', color: '#ffffff', bgColor: '#58a6ff' },
 };
 
@@ -28,6 +29,7 @@ const LABEL_MAP = {
   'presskey': 'Presskey',
   'wait': 'Wait',
   'delay': 'Delay',
+  'clipboard': 'Clipboard',
   'loop': 'Loop',
   'conditions': 'Conditions',
   'javascript-code': 'JavaScript',
@@ -763,7 +765,7 @@ function VariableInput({ value, onChange, placeholder, isTextarea = false, param
   );
 }
 
-function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters = [] }) {
+function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters: originalParameters = [], workflowData }) {
   if (!node) return null;
   const icon = getIcon(node.data?.icon);
   const label = getLabel(node.label);
@@ -778,6 +780,35 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
   const [timeout, setTimeoutVal] = useState(node.data?.timeout || 0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [time, setTime] = useState(node.data?.time || '5000');
+
+  // Collect variables assigned dynamically by workflow blocks (e.g. Clipboard's variableName)
+  const nodeVariables = [];
+  if (workflowData?.drawflow?.nodes) {
+    workflowData.drawflow.nodes.forEach(n => {
+      if (n.data) {
+        if (n.data.variableName && n.data.variableName.trim() !== '') {
+          nodeVariables.push(n.data.variableName.trim());
+        }
+        if (n.data.assignToVariable && n.data.assignToVariable.trim() !== '') {
+          nodeVariables.push(n.data.assignToVariable.trim());
+        }
+      }
+    });
+  }
+  const parameters = [
+    ...originalParameters,
+    ...Array.from(new Set(nodeVariables)).map(v => ({ name: v, label: v }))
+  ];
+
+  const [clipboardType, setClipboardType] = useState(node.data?.type || 'get');
+  const [assignVariable, setAssignVariable] = useState(node.data?.assignVariable !== false);
+  const [variableName, setVariableName] = useState(node.data?.variableName || '');
+  const [saveData, setSaveData] = useState(node.data?.saveData || false);
+  const [dataColumn, setDataColumn] = useState(node.data?.dataColumn || '');
+  const [dataToCopy, setDataToCopy] = useState(node.data?.dataToCopy || '');
+  const [copySelectedText, setCopySelectedText] = useState(node.data?.copySelectedText || false);
+  const [clipboardTypeDropdownOpen, setClipboardTypeDropdownOpen] = useState(false);
+  const [dataColumnDropdownOpen, setDataColumnDropdownOpen] = useState(false);
 
   // Mouse Click & Input Text states
   const [selector, setSelector] = useState('');
@@ -872,6 +903,17 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
 
     // Delay
     setTime(node.data?.time || '5000');
+
+    // Clipboard
+    setClipboardType(node.data?.type || 'get');
+    setAssignVariable(node.data?.assignVariable !== false);
+    setVariableName(node.data?.variableName || '');
+    setSaveData(node.data?.saveData || false);
+    setDataColumn(node.data?.dataColumn || '');
+    setDataToCopy(node.data?.dataToCopy || '');
+    setCopySelectedText(node.data?.copySelectedText || false);
+    setClipboardTypeDropdownOpen(false);
+    setDataColumnDropdownOpen(false);
 
     // Close dropdowns
     setDropdownOpen(false);
@@ -1698,6 +1740,191 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
               </div>
             </div>
           </>
+        ) : node.label === 'clipboard' ? (
+          <>
+            {/* Clipboard Type Dropdown */}
+            <div className={styles.propsField} style={{ position: 'relative' }}>
+              <div
+                className={styles.customSelect}
+                onClick={() => setClipboardTypeDropdownOpen(!clipboardTypeDropdownOpen)}
+              >
+                <span>{clipboardType === 'get' ? 'Get clipboard data' : 'Insert text to clipboard'}</span>
+                <span className={styles.chevron}>{clipboardTypeDropdownOpen ? '▲' : '▼'}</span>
+              </div>
+              {clipboardTypeDropdownOpen && (
+                <div className={styles.dropdownOptions}>
+                  {[
+                    { value: 'get', label: 'Get clipboard data' },
+                    { value: 'set', label: 'Insert text to clipboard' }
+                  ].map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`${styles.dropdownOption} ${clipboardType === opt.value ? styles.dropdownOptionSelected : ''}`}
+                      onClick={() => {
+                        setClipboardType(opt.value);
+                        onUpdate(node.id, 'type', opt.value);
+                        setClipboardTypeDropdownOpen(false);
+                      }}
+                    >
+                      <span>{opt.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* If GET mode */}
+            {clipboardType === 'get' ? (
+              <>
+                {/* Assign to variable checkbox */}
+                <div className={styles.checkboxGroup} style={{ marginTop: '0.75rem' }}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={assignVariable}
+                      onChange={(e) => {
+                        const val = e.target.checked;
+                        setAssignVariable(val);
+                        onUpdate(node.id, 'assignVariable', val);
+                      }}
+                    />
+                    <span>Assign to variable</span>
+                  </label>
+                </div>
+
+                {/* Variable name input */}
+                {assignVariable && (
+                  <div className={styles.propsField}>
+                    <input
+                      type="text"
+                      placeholder="Variable name"
+                      value={variableName}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setVariableName(val);
+                        onUpdate(node.id, 'variableName', val);
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Insert to table checkbox */}
+                <div className={styles.checkboxGroup} style={{ marginTop: '0.75rem' }}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={saveData}
+                      onChange={(e) => {
+                        const val = e.target.checked;
+                        setSaveData(val);
+                        onUpdate(node.id, 'saveData', val);
+                      }}
+                    />
+                    <span>Insert to table</span>
+                  </label>
+                </div>
+
+                {/* Select column dropdown */}
+                {saveData && (
+                  <div className={styles.propsField} style={{ position: 'relative' }}>
+                    <div
+                      className={styles.customSelect}
+                      onClick={() => setDataColumnDropdownOpen(!dataColumnDropdownOpen)}
+                    >
+                      <span>{dataColumn || 'Select column'}</span>
+                      <span className={styles.chevron}>{dataColumnDropdownOpen ? '▲' : '▼'}</span>
+                    </div>
+                    {dataColumnDropdownOpen && (
+                      <div className={styles.dropdownOptions}>
+                        {(() => {
+                          const tableColumns = workflowData?.table || [];
+                          const columnsList = tableColumns.map(col => typeof col === 'string' ? col : col.name).filter(Boolean);
+                          const finalColumns = columnsList.length > 0 ? columnsList : ['column1', 'column2'];
+                          
+                          return finalColumns.map(col => (
+                            <div
+                              key={col}
+                              className={`${styles.dropdownOption} ${dataColumn === col ? styles.dropdownOptionSelected : ''}`}
+                              onClick={() => {
+                                setDataColumn(col);
+                                onUpdate(node.id, 'dataColumn', col);
+                                setDataColumnDropdownOpen(false);
+                              }}
+                            >
+                              <span>{col}</span>
+                            </div>
+                          ));
+                        })()}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : (
+              /* If SET mode */
+              <>
+                {/* Data to copy input */}
+                <div className={styles.propsField}>
+                  <label className={styles.propsFieldLabel}>Data to copy</label>
+                  <VariableInput
+                    placeholder="Text to copy"
+                    value={dataToCopy}
+                    onChange={(val) => {
+                      setDataToCopy(val);
+                      onUpdate(node.id, 'dataToCopy', val);
+                    }}
+                    parameters={parameters}
+                  />
+                </div>
+
+                {/* Copy selected text checkbox */}
+                <div className={styles.checkboxGroup} style={{ marginTop: '0.75rem' }}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={copySelectedText}
+                      onChange={(e) => {
+                        const val = e.target.checked;
+                        setCopySelectedText(val);
+                        onUpdate(node.id, 'copySelectedText', val);
+                      }}
+                    />
+                    <span>Copy selected text</span>
+                  </label>
+                </div>
+              </>
+            )}
+
+            {/* Divider */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Settings Section */}
+            <h4 className={styles.sectionHeader} style={{ borderTop: 'none', paddingTop: 0, marginTop: 0 }}>Settings</h4>
+
+            {/* Timeout */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Timeout (millisecond)</label>
+              <input
+                type="number"
+                value={timeout}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10) || 0;
+                  setTimeoutVal(val);
+                  onUpdate(node.id, 'timeout', val);
+                }}
+              />
+            </div>
+
+            {/* Delay time */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Delay time (millisecond)</label>
+              <input
+                type="number"
+                value={delay}
+                onChange={handleDelayChange}
+              />
+            </div>
+          </>
         ) : (
           /* Render simple editable fields for other block types */
           Object.entries(node.data || {}).map(([key, value]) => {
@@ -2136,6 +2363,7 @@ export default function WorkflowPreview({ data, height = 580 }) {
         onUpdate={handleFieldUpdate}
         onOpenParameters={() => setShowParametersModal(true)}
         parameters={workflowData?.drawflow?.nodes?.find(n => n.label === 'trigger')?.data?.parameters || []}
+        workflowData={workflowData}
       />
 
       <ParametersModal
