@@ -284,7 +284,484 @@ function BlockNode({
   );
 }
 
-function PropertiesPanel({ node, onClose, onUpdate }) {
+function ParametersModal({ isOpen, onClose, parameters = [], onUpdate }) {
+  const [selectedParamId, setSelectedParamId] = useState(parameters[0]?.id || null);
+  const [optionsExpanded, setOptionsExpanded] = useState(true);
+
+  // Sync selectedParamId if it becomes invalid
+  useEffect(() => {
+    if (parameters.length > 0 && (!selectedParamId || !parameters.some(p => p.id === selectedParamId))) {
+      setSelectedParamId(parameters[0].id);
+    }
+  }, [parameters, selectedParamId]);
+
+  if (!isOpen) return null;
+
+  const handleAddParam = (type) => {
+    const id = `${type}_param_${Date.now().toString().slice(-4)}`;
+    let newParam = {
+      id,
+      placeholder: type === 'string' ? 'Enter text' : type === 'filepath' ? 'C:/cookies/account1.json' : '',
+      data: { required: false },
+      defaultValue: type === 'checkbox' ? false : '',
+      name: `${type}_param_${parameters.length + 1}`,
+      type,
+      description: '',
+      label: type.charAt(0).toUpperCase() + type.slice(1)
+    };
+
+    if (type === 'divider') {
+      newParam.name = '';
+      newParam.label = '';
+      newParam.data = { label: 'Divider', thickness: 1, marginBottom: 8, marginTop: 8 };
+    } else if (type === 'inline') {
+      newParam.name = '';
+      newParam.label = '';
+      newParam.type = 'inline';
+      newParam.data = { height: 16 };
+    } else if (type === 'label') {
+      newParam.name = '';
+      newParam.label = 'Label';
+      newParam.data = { text: 'Label text', variant: 'default' };
+    } else if (type === 'filepath') {
+      newParam.type = 'filepath';
+      newParam.data = { required: false, useMask: false };
+    }
+
+    const updated = [...parameters, newParam];
+    onUpdate(updated);
+    setSelectedParamId(id);
+  };
+
+  const handleDuplicate = (param, index) => {
+    const newId = `${param.type}_param_${Date.now().toString().slice(-4)}`;
+    const clone = JSON.parse(JSON.stringify(param));
+    clone.id = newId;
+    clone.name = param.name ? `${param.name}_copy` : '';
+    const updated = [...parameters];
+    updated.splice(index + 1, 0, clone);
+    onUpdate(updated);
+    setSelectedParamId(newId);
+  };
+
+  const handleDelete = (id) => {
+    const updated = parameters.filter(p => p.id !== id);
+    onUpdate(updated);
+    if (selectedParamId === id) {
+      setSelectedParamId(updated[0]?.id || null);
+    }
+  };
+
+  const handleMove = (index, direction) => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === parameters.length - 1) return;
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    const updated = [...parameters];
+    const temp = updated[index];
+    updated[index] = updated[targetIndex];
+    updated[targetIndex] = temp;
+    onUpdate(updated);
+  };
+
+  const selectedParam = parameters.find(p => p.id === selectedParamId);
+
+  const handleParamFieldChange = (field, value) => {
+    if (!selectedParam) return;
+    const updated = parameters.map(p => {
+      if (p.id === selectedParamId) {
+        return { ...p, [field]: value };
+      }
+      return p;
+    });
+    onUpdate(updated);
+  };
+
+  const handleParamDataChange = (field, value) => {
+    if (!selectedParam) return;
+    const updated = parameters.map(p => {
+      if (p.id === selectedParamId) {
+        const newData = { ...p.data, [field]: value };
+        return { ...p, data: newData };
+      }
+      return p;
+    });
+    onUpdate(updated);
+  };
+
+  return (
+    <div className={styles.modalOverlay} onClick={onClose}>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalHeader}>
+          <h2>Parameters</h2>
+          <button className={styles.modalCloseBtn} onClick={onClose}>✕</button>
+        </div>
+
+        <div className={styles.modalBody}>
+          {/* Left Column - Add Options */}
+          <div className={styles.modalLeftCol}>
+            <div className={styles.sidebarSection}>
+              <h4 className={styles.sidebarSectionHeader}>PARAMETER</h4>
+              <div className={styles.addButtonList}>
+                <button onClick={() => handleAddParam('checkbox')}>Checkbox <span>+</span></button>
+                <button onClick={() => handleAddParam('filepath')}>File Path <span>+</span></button>
+                <button onClick={() => handleAddParam('json')}>Input (JSON) <span>+</span></button>
+                <button onClick={() => handleAddParam('number')}>Input (number) <span>+</span></button>
+                <button onClick={() => handleAddParam('string')}>Input (string) <span>+</span></button>
+              </div>
+            </div>
+            <div className={styles.sidebarSection}>
+              <h4 className={styles.sidebarSectionHeader}>LAYOUT</h4>
+              <div className={styles.addButtonList}>
+                <button onClick={() => handleAddParam('divider')}>Divider <span>+</span></button>
+                <button onClick={() => handleAddParam('inline')}>Spacer <span>+</span></button>
+                <button onClick={() => handleAddParam('label')}>Label <span>+</span></button>
+              </div>
+            </div>
+          </div>
+
+          {/* Middle Column - Current Parameters List */}
+          <div className={styles.modalMidCol}>
+            <div className={styles.midColHeader}>
+              <span>CURRENT PARAMETERS</span>
+              <span title="View mode" style={{ cursor: 'pointer', width: 10, height: 10, borderRadius: '50%', background: '#8b5cf6', display: 'inline-block' }}></span>
+            </div>
+            <div className={styles.paramListContainer}>
+              {parameters.map((param, index) => {
+                const isSel = param.id === selectedParamId;
+                const isDiv = param.type === 'divider';
+                const isSpc = param.type === 'inline';
+                const isLbl = param.type === 'label';
+                
+                let displayName = param.label || param.type;
+                if (isDiv) displayName = param.data?.label || 'Divider';
+                if (isSpc) displayName = 'Inline Spacer';
+                if (isLbl) displayName = param.label || 'Label';
+
+                let typeLabel = param.type;
+                if (isDiv) typeLabel = 'Divider';
+                if (isSpc) typeLabel = 'Spacer';
+                if (isLbl) typeLabel = 'Label';
+                if (param.type === 'filepath') typeLabel = 'File Path';
+                if (param.type === 'json') typeLabel = 'Input (JSON)';
+                if (param.type === 'number') typeLabel = 'Input (number)';
+                if (param.type === 'string') typeLabel = 'Input (string)';
+
+                return (
+                  <div
+                    key={param.id}
+                    className={`${styles.paramItemCard} ${isSel ? styles.paramItemCardSelected : ''}`}
+                    onClick={() => setSelectedParamId(param.id)}
+                  >
+                    <div className={styles.paramCardLeft}>
+                      <span className={styles.dragHandleIcon}>:::</span>
+                      <div className={styles.paramCardInfo}>
+                        <div className={styles.paramCardTitle}>{displayName}</div>
+                        <div className={styles.paramCardType}>{typeLabel}</div>
+                      </div>
+                    </div>
+                    <div className={styles.paramCardActions}>
+                      <button onClick={(e) => { e.stopPropagation(); handleMove(index, 'up'); }} disabled={index === 0} title="Move Up">▲</button>
+                      <button onClick={(e) => { e.stopPropagation(); handleMove(index, 'down'); }} disabled={index === parameters.length - 1} title="Move Down">▼</button>
+                      <button onClick={(e) => { e.stopPropagation(); handleDuplicate(param, index); }} title="Duplicate">📑</button>
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(param.id); }} title="Delete">🗑</button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right Column - Selected Parameter Details */}
+          <div className={styles.modalRightCol}>
+            {selectedParam ? (
+              <div className={styles.detailsContainer}>
+                <h4 className={styles.detailsHeader}>PARAMETER DETAILS</h4>
+
+                {/* Name field (only for inputs) */}
+                {selectedParam.type !== 'divider' && selectedParam.type !== 'inline' && selectedParam.type !== 'label' && (
+                  <div className={styles.detailsField}>
+                    <label>Name</label>
+                    <input
+                      type="text"
+                      value={selectedParam.name || ''}
+                      onChange={(e) => handleParamFieldChange('name', e.target.value)}
+                    />
+                  </div>
+                )}
+
+                {/* Label field */}
+                {selectedParam.type !== 'divider' && selectedParam.type !== 'inline' && (
+                  <div className={styles.detailsField}>
+                    <label>Label</label>
+                    <input
+                      type="text"
+                      value={selectedParam.label || ''}
+                      onChange={(e) => handleParamFieldChange('label', e.target.value)}
+                    />
+                  </div>
+                )}
+
+                {/* Placeholder field */}
+                {selectedParam.type !== 'checkbox' && selectedParam.type !== 'divider' && selectedParam.type !== 'inline' && selectedParam.type !== 'label' && (
+                  <div className={styles.detailsField}>
+                    <label>Placeholder</label>
+                    <input
+                      type="text"
+                      value={selectedParam.placeholder || ''}
+                      onChange={(e) => handleParamFieldChange('placeholder', e.target.value)}
+                    />
+                  </div>
+                )}
+
+                {/* Default value field */}
+                <div className={styles.detailsField}>
+                  <label>Default value</label>
+                  {selectedParam.type === 'checkbox' ? (
+                    <label className={styles.checkboxLabel}>
+                      <input
+                        type="checkbox"
+                        checked={!!selectedParam.defaultValue}
+                        onChange={(e) => handleParamFieldChange('defaultValue', e.target.checked)}
+                      />
+                      <span>Text</span>
+                    </label>
+                  ) : selectedParam.type === 'filepath' ? (
+                    <div className={styles.varInputWrapper} style={{ display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type="text"
+                        placeholder="Text"
+                        value={selectedParam.defaultValue || ''}
+                        onChange={(e) => handleParamFieldChange('defaultValue', e.target.value)}
+                        style={{ flex: 1 }}
+                      />
+                      <button className={styles.varButton} title="Browse File" style={{ borderLeft: '1px solid rgba(0,0,0,0.1)' }}>📁</button>
+                    </div>
+                  ) : selectedParam.type === 'divider' ? (
+                    <input
+                      type="text"
+                      value={selectedParam.data?.label || ''}
+                      placeholder="Divider label text"
+                      onChange={(e) => handleParamDataChange('label', e.target.value)}
+                    />
+                  ) : selectedParam.type === 'label' ? (
+                    <textarea
+                      value={selectedParam.data?.text || ''}
+                      placeholder="Label content text"
+                      onChange={(e) => handleParamDataChange('text', e.target.value)}
+                      rows={3}
+                      style={{ width: '100%', resize: 'vertical' }}
+                    />
+                  ) : selectedParam.type === 'inline' ? (
+                    <input
+                      type="number"
+                      value={selectedParam.data?.height || 16}
+                      onChange={(e) => handleParamDataChange('height', parseInt(e.target.value, 10) || 16)}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder={selectedParam.type === 'number' ? 'NULL' : 'Text'}
+                      value={selectedParam.defaultValue || ''}
+                      onChange={(e) => handleParamFieldChange('defaultValue', e.target.value)}
+                    />
+                  )}
+                </div>
+
+                {/* Collapsible Options Section */}
+                <div className={styles.detailsOptionsBlock}>
+                  <div
+                    className={styles.collapsibleHeader}
+                    onClick={() => setOptionsExpanded(!optionsExpanded)}
+                    style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '0.8rem', marginTop: '0.8rem' }}
+                  >
+                    <span className={styles.collapsibleChevron}>{optionsExpanded ? '▼' : '▶'}</span>
+                    <span>Options</span>
+                  </div>
+
+                  {optionsExpanded && (
+                    <div className={styles.collapsibleContent} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+                      {/* Parameter required checkbox (for number/string/json/filepath/checkbox) */}
+                      {['number', 'string', 'json', 'filepath', 'checkbox'].includes(selectedParam.type) && (
+                        <label className={styles.checkboxLabel}>
+                          <input
+                            type="checkbox"
+                            checked={!!selectedParam.data?.required}
+                            onChange={(e) => handleParamDataChange('required', e.target.checked)}
+                          />
+                          <span>Parameter required</span>
+                        </label>
+                      )}
+
+                      {/* Description textarea */}
+                      <div className={styles.detailsField} style={{ margin: 0 }}>
+                        <label style={{ fontSize: '0.75rem', color: '#57606a', marginBottom: '0.25rem' }}>Description</label>
+                        <textarea
+                          value={selectedParam.description || ''}
+                          onChange={(e) => handleParamFieldChange('description', e.target.value)}
+                          rows={2}
+                          placeholder="Parameter description..."
+                          style={{ width: '100%', resize: 'none' }}
+                        />
+                      </div>
+
+                      {/* Divided checkbox & label */}
+                      <label className={styles.checkboxLabel}>
+                        <input
+                          type="checkbox"
+                          checked={!!selectedParam.data?.divided}
+                          onChange={(e) => handleParamDataChange('divided', e.target.checked)}
+                        />
+                        <span>Divided</span>
+                      </label>
+
+                      <div className={styles.detailsField} style={{ margin: 0 }}>
+                        <label style={{ fontSize: '0.75rem', color: '#57606a', marginBottom: '0.25rem' }}>Divided label</label>
+                        <input
+                          type="text"
+                          value={selectedParam.data?.dividedLabel || ''}
+                          onChange={(e) => handleParamDataChange('dividedLabel', e.target.value)}
+                          disabled={!selectedParam.data?.divided}
+                          placeholder="Section header text"
+                        />
+                      </div>
+
+                      {/* Use input masking (filepath/string specific) */}
+                      {['filepath', 'string'].includes(selectedParam.type) && (
+                        <div className={styles.propsField} style={{ margin: 0 }}>
+                          <div className={styles.toggleWrapper} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                checked={!!selectedParam.data?.useMask}
+                                onChange={(e) => handleParamDataChange('useMask', e.target.checked)}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                            <span className={styles.toggleLabel} style={{ fontSize: '0.78rem' }}>
+                              Use input masking <span title="Input mask details" style={{ cursor: 'pointer', color: 'rgba(0,0,0,0.35)' }}>ⓘ</span>
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className={styles.detailsPlaceholder}>
+                <span>Select a parameter to view and configure details.</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VariableInput({ value, onChange, placeholder, isTextarea = false, parameters = [] }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (varName) => {
+    let bracketSyntax = `{{variables.${varName}}}`;
+    if (varName === 'variables' || varName === 'globalData' || varName === 'googleSheets') {
+      bracketSyntax = `{{${varName}}}`;
+    }
+    onChange(value + bracketSyntax);
+    setDropdownOpen(false);
+  };
+
+  const defaultOptions = ['variables', 'globalData', 'googleSheets'];
+  const allOptions = [...defaultOptions, ...parameters.map(p => p.name).filter(Boolean)];
+
+  return (
+    <div className={styles.varInputWrapper} ref={ref} style={{ position: 'relative', width: '100%', display: 'flex' }}>
+      {isTextarea ? (
+        <textarea
+          className={styles.customTextarea}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          rows={2}
+          style={{ flex: 1, paddingRight: '40px' }}
+        />
+      ) : (
+        <input
+          type="text"
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          style={{ flex: 1, paddingRight: '40px' }}
+        />
+      )}
+      <button
+        type="button"
+        className={styles.varButton}
+        title="Insert Variable"
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+        style={{
+          position: 'absolute',
+          right: '1px',
+          top: '1px',
+          bottom: '1px',
+          height: 'calc(100% - 2px)',
+          borderLeft: '1px solid rgba(0,0,0,0.1)',
+          background: '#f6f8fa',
+          color: '#24292f',
+          padding: '0 10px',
+          fontSize: '0.85rem',
+          cursor: 'pointer',
+          borderTopRightRadius: '6px',
+          borderBottomRightRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2
+        }}
+      >
+        {`{x}`}
+      </button>
+      {dropdownOpen && (
+        <div className={styles.varDropdownMenu}>
+          {allOptions.map((opt, idx) => {
+            const isHeader = idx < 3;
+            return (
+              <div
+                key={opt}
+                className={styles.varDropdownItem}
+                style={{
+                  color: isHeader ? '#57606a' : '#24292f',
+                  fontWeight: isHeader ? 'normal' : '500',
+                  borderBottom: idx === 2 ? '1px solid rgba(0,0,0,0.06)' : 'none',
+                  padding: '6px 12px',
+                  cursor: 'pointer',
+                  fontSize: '0.82rem',
+                  textAlign: 'left'
+                }}
+                onClick={() => handleSelect(opt)}
+              >
+                {opt}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters = [] }) {
   if (!node) return null;
   const icon = getIcon(node.data?.icon);
   const label = getLabel(node.label);
@@ -460,22 +937,33 @@ function PropertiesPanel({ node, onClose, onUpdate }) {
           onChange={handleDescChange}
         />
 
+        {node.label === 'trigger' && (
+          <>
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '0.75rem 0' }} />
+            <button
+              onClick={() => onOpenParameters && onOpenParameters()}
+              className={styles.parametersBtn}
+            >
+              <span style={{ fontSize: '1.1rem', marginRight: '0.35rem' }}>⌘</span>
+              <span>Parameters</span>
+            </button>
+          </>
+        )}
+
         {node.label === 'open-url' ? (
           <>
             {/* Open URL Input */}
             <div className={styles.propsField}>
               <label className={styles.propsFieldLabel}>Open url</label>
-              <div className={styles.varInputWrapper}>
-                <input
-                  type="text"
-                  placeholder="http://example.com/"
-                  value={url}
-                  onChange={handleUrlChange}
-                />
-                <button className={styles.varButton} title="Insert Variable">
-                  {`{x}`}
-                </button>
-              </div>
+              <VariableInput
+                placeholder="http://example.com/"
+                value={url}
+                onChange={(val) => {
+                  setUrl(val);
+                  onUpdate(node.id, 'url', val);
+                }}
+                parameters={parameters}
+              />
             </div>
 
             {/* Wait for Navigation Dropdown */}
@@ -622,21 +1110,15 @@ function PropertiesPanel({ node, onClose, onUpdate }) {
 
             {/* Selector Path Input */}
             <div className={styles.propsField}>
-              <div className={styles.varInputWrapper}>
-                <input
-                  type="text"
-                  placeholder="//input[@name='search_query']"
-                  value={selector}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setSelector(val);
-                    onUpdate(node.id, 'selector', val);
-                  }}
-                />
-                <button className={styles.varButton} title="Insert Variable">
-                  {`{x}`}
-                </button>
-              </div>
+              <VariableInput
+                placeholder="//input[@name='search_query']"
+                value={selector}
+                onChange={(val) => {
+                  setSelector(val);
+                  onUpdate(node.id, 'selector', val);
+                }}
+                parameters={parameters}
+              />
             </div>
 
             {/* Click type */}
@@ -821,21 +1303,15 @@ function PropertiesPanel({ node, onClose, onUpdate }) {
 
             {/* Selector Path Input */}
             <div className={styles.propsField}>
-              <div className={styles.varInputWrapper}>
-                <input
-                  type="text"
-                  placeholder="//input[@name='search_query']"
-                  value={selector}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setSelector(val);
-                    onUpdate(node.id, 'selector', val);
-                  }}
-                />
-                <button className={styles.varButton} title="Insert Variable">
-                  {`{x}`}
-                </button>
-              </div>
+              <VariableInput
+                placeholder="//input[@name='search_query']"
+                value={selector}
+                onChange={(val) => {
+                  setSelector(val);
+                  onUpdate(node.id, 'selector', val);
+                }}
+                parameters={parameters}
+              />
             </div>
 
             {/* Selector options */}
@@ -927,22 +1403,16 @@ function PropertiesPanel({ node, onClose, onUpdate }) {
 
             {/* Value textarea input */}
             <div className={styles.propsField}>
-              <div className={styles.varInputWrapper}>
-                <textarea
-                  className={styles.customTextarea}
-                  placeholder="Value"
-                  value={value}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setValue(val);
-                    onUpdate(node.id, 'value', val);
-                  }}
-                  rows={2}
-                />
-                <button className={styles.varButton} style={{ alignSelf: 'stretch', height: 'auto' }} title="Insert Variable">
-                  {`{x}`}
-                </button>
-              </div>
+              <VariableInput
+                placeholder="Value"
+                value={value}
+                onChange={(val) => {
+                  setValue(val);
+                  onUpdate(node.id, 'value', val);
+                }}
+                isTextarea={true}
+                parameters={parameters}
+              />
             </div>
 
             {/* Typing delay */}
@@ -1053,21 +1523,15 @@ function PropertiesPanel({ node, onClose, onUpdate }) {
             {/* Target Element path */}
             <div className={styles.propsField}>
               <label className={styles.propsFieldLabel}>Target element (Optional)</label>
-              <div className={styles.varInputWrapper}>
-                <input
-                  type="text"
-                  placeholder="CSS Selector or XPath"
-                  value={targetElement}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setTargetElement(val);
-                    onUpdate(node.id, 'targetElement', val);
-                  }}
-                />
-                <button className={styles.varButton} title="Insert Variable">
-                  {`{x}`}
-                </button>
-              </div>
+              <VariableInput
+                placeholder="CSS Selector or XPath"
+                value={targetElement}
+                onChange={(val) => {
+                  setTargetElement(val);
+                  onUpdate(node.id, 'targetElement', val);
+                }}
+                parameters={parameters}
+              />
             </div>
 
             {/* Level */}
@@ -1213,6 +1677,7 @@ function PropertiesPanel({ node, onClose, onUpdate }) {
         ) : (
           /* Render simple editable fields for other block types */
           Object.entries(node.data || {}).map(([key, value]) => {
+            if (node.label === 'trigger') return null;
             if (['icon', 'disableBlock', 'observeElement', 'description'].includes(key)) return null;
             if (typeof value === 'object' && value !== null) return null;
             return (
@@ -1242,6 +1707,7 @@ export default function WorkflowPreview({ data, height = 580 }) {
   const [scale, setScale] = useState(1);
   const [workflowData, setWorkflowData] = useState(null);
   const [defaultView, setDefaultView] = useState({ x: 0, y: 0, scale: 1 });
+  const [showParametersModal, setShowParametersModal] = useState(false);
 
   // Drag block state
   const [draggingNode, setDraggingNode] = useState(null);
@@ -1455,6 +1921,19 @@ export default function WorkflowPreview({ data, height = 580 }) {
     setSelectedNode(prev => prev?.id === nodeId ? null : prev);
   }, []);
 
+  // --- Update parameters for trigger/Start node ---
+  const handleUpdateParameters = useCallback((nodeId, newParams) => {
+    setWorkflowData(prev => {
+      if (!prev) return prev;
+      const newData = JSON.parse(JSON.stringify(prev));
+      const node = newData.drawflow.nodes.find(n => n.id === nodeId);
+      if (node && node.data) {
+        node.data.parameters = newParams;
+      }
+      return newData;
+    });
+  }, []);
+
   const handleWheel = useCallback((e) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.05 : 0.05;
@@ -1519,7 +1998,7 @@ export default function WorkflowPreview({ data, height = 580 }) {
   return (
     <div className={styles.workflowContainer} style={{ height }}>
       <div className={styles.workflowToolbar}>
-        <span className={styles.workflowTitle}>🔧 Workflow Preview</span>
+        <span className={styles.workflowTitle}>Workflow Preview</span>
         <div className={styles.workflowHints}>
           <span>Drag blocks to move</span>
           <span>•</span>
@@ -1629,6 +2108,15 @@ export default function WorkflowPreview({ data, height = 580 }) {
         node={selectedNode}
         onClose={() => setSelectedNode(null)}
         onUpdate={handleFieldUpdate}
+        onOpenParameters={() => setShowParametersModal(true)}
+        parameters={workflowData?.drawflow?.nodes?.find(n => n.label === 'trigger')?.data?.parameters || []}
+      />
+
+      <ParametersModal
+        isOpen={showParametersModal}
+        onClose={() => setShowParametersModal(false)}
+        parameters={workflowData.drawflow.nodes.find(n => n.id === selectedNode?.id)?.data?.parameters || []}
+        onUpdate={(newParams) => handleUpdateParameters(selectedNode.id, newParams)}
       />
     </div>
   );

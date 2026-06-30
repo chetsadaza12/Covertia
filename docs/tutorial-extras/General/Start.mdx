@@ -3,13 +3,12 @@ title: Start
 sidebar_label: Start
 ---
 
-import ExportCovertia from '@site/src/components/ExportCovertia';
 import WorkflowPreview from '@site/src/components/WorkflowPreview';
 import startData from '@site/docs/Script/Start.json';
 
 # Start Workflow
 
-ตัวอย่าง Workflow เริ่มต้นของ Covertia ประกอบด้วยบล็อกพื้นฐาน **Trigger → Insert Data → End** สำหรับเริ่มต้นการใช้งานระบบ Automation
+ตัวอย่าง Workflow สาธิตการทำงานของบล็อก **Start (Trigger)** ที่มาพร้อมระบบ **Parameters** สำหรับสร้างฟอร์มรับข้อมูลผู้ใช้ก่อนเริ่ม Automation โดยเชื่อมต่อไปยังบล็อก **Open URL** เพื่อเปิดหน้าเว็บเป้าหมาย
 
 ## Interactive Workflow Preview
 
@@ -21,20 +20,44 @@ import startData from '@site/docs/Script/Start.json';
 
 | Block | Type | Description |
 |-------|------|-------------|
-| **Start** | `BlockBasic` | จุดเริ่มต้นการทำงานของ Workflow (Manual Trigger) |
-| **Insert Data** | `BlockBasicWithFallback` | บล็อกสำหรับเพิ่มข้อมูลเข้าสู่ระบบ |
-| **End** | `BlockBasic` | จุดสิ้นสุดการทำงาน |
+| **Start (Trigger)** | `BlockBasic` | จุดเริ่มต้นการทำงาน พร้อมระบบ Parameters สำหรับสร้าง UI Form รับข้อมูลผู้ใช้ |
+| **Open URL** | `BlockBasicWithFallback` | เปิดหน้าเว็บเป้าหมาย (ในตัวอย่างใช้ `facebook.com`) |
 
-## Export Workflow
+## การตั้งค่า Parameter ของบล็อก Start
 
-คลิกปุ่ม **Export .covertia** ด้านล่างเพื่อดาวน์โหลดไฟล์ Workflow และนำเข้าในโปรแกรม Covertia ได้ทันที
+บล็อก **Start** สามารถสร้างอินเทอร์เฟซ (UI Form) สำหรับรับข้อมูลจากผู้ใช้งานก่อนที่การทำงานแบบ Automation จะเริ่มต้นขึ้น โดยสามารถกดปุ่ม **⌘ Parameters** ในกล่องตั้งค่าเพื่อเปิดตัวแก้ไขพารามิเตอร์
 
-<ExportCovertia data={startData} filename="Start" />
+### ประเภทข้อมูล (Data Inputs)
 
-:::tip วิธีใช้งาน
-1. คลิกปุ่ม ** Export .covertia** เพื่อดาวน์โหลดไฟล์
-2. เปิดโปรแกรม Covertia
-3. ไปที่เมนู **Import Workflow**
-4. เลือกไฟล์ `Start.covertia` ที่ดาวน์โหลดไว้
-5. Workflow จะถูกนำเข้าพร้อมใช้งานทันที
-:::
+| ประเภทพารามิเตอร์ | คำอธิบาย | วิธีการกรอกข้อมูล | ตัวอย่างรูปแบบข้อมูลผลลัพธ์ |
+| :--- | :--- | :--- | :--- |
+| **Checkbox** | สวิตช์สำหรับเปิด/ปิด ค่าแบบ boolean (`true` / `false`) | <ul><li>**Name**: `enable_proxy`</li><li>**Label**: `Enable Proxy`</li><li>**Default**: ติ๊กเลือก = `true` / ไม่ติ๊ก = `false`</li></ul> | `{"enable_proxy": true}` |
+| **File Path** | กล่องสำหรับรับเส้นทาง (Path) ของไฟล์ในระบบเครื่อง | <ul><li>**Name**: `cookie_file`</li><li>**Label**: `Cookie File`</li><li>**Placeholder**: `C:/cookies/account1.json`</li></ul> | `"C:/Users/Admin/Desktop/cookies.json"` <br/>หรือ Linux `"/home/user/data.txt"` |
+| **Input (JSON)** | รับชุดข้อมูลในรูปแบบ JSON Object | <ul><li>**Name**: `config`</li><li>**Label**: `Config`</li><li>**Default**: ชุดข้อมูล Object เริ่มต้น</li></ul> | `{"proxy": {"host": "1.1.1.1", "port": 8080}, "headless": true}` |
+| **Input (number)** | รับค่าเฉพาะตัวเลขเท่านั้น (เช่น delay, timeout, retry, จำนวนรอบ) | <ul><li>**Name**: `delay`</li><li>**Label**: `Delay`</li><li>**Default**: `5`</li></ul> | `10` |
+| **Input (string)** | รับค่าข้อความทั่วไป (เช่น email, password, token, url, text) | <ul><li>**Name**: `username`</li><li>**Label**: `Username`</li><li>**Placeholder**: `Enter username`</li></ul> | `"admin123"` |
+
+### ประเภทการจัดเลย์เอาต์ UI (Layout Components)
+
+*   **Divider** : เส้นแบ่งกลุ่มเนื้อหาการตั้งค่า
+    *   **วิธีใส่**: เปิดตัวเลือก Divided และระบุชื่อหัวข้อกลุ่มที่ช่อง **Divided label** (เช่น `Account Setting`)
+*   **Spacer** : สร้างระยะห่างหรือเว้นวรรคระหว่างแผงควบคุม UI
+    *   **วิธีใช้**: กดเพิ่มเข้าสู่รายการปัจจุบันได้ทันทีโดยไม่ต้องตั้งค่าเพิ่มเติมใด ๆ
+*   **Label** : กล่องแสดงข้อความ/หมายเหตุแนะนำ หรือคำแจ้งเตือนบนฟอร์ม
+    *   **วิธีใช้**: ระบุเนื้อหาข้อมูลที่ช่อง **Label** (เช่น `Please fill all required fields`)
+
+---
+
+### ตัวอย่างชุด Parameter ใช้งานจริง (Login Form)
+
+เมื่อสร้างฟอร์ม Login พร้อมใช้งาน จะประกอบไปด้วยตัวอย่างโครงสร้างข้อมูลดังนี้:
+
+*   **Divider**: `Login Form`
+*   **Input (string)**: `username`
+*   **Input (string)**: `password`
+*   **Checkbox**: `remember_me`
+*   **Input (number)**: `delay` = `5`
+*   **Input (JSON)**: `{"proxy": "http://1.1.1.1:8080"}`
+*   **File Path**: `C:/cookie/account.json`
+
+
