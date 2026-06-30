@@ -1,0 +1,825 @@
+.workflowContainer {
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  background: #f8f9fa;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.workflowToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 1rem;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 5;
+  gap: 0.75rem;
+}
+
+.workflowTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.workflowHints {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.workflowControls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.workflowControls button {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  color: #57606a;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.workflowControls button:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #1a1a1a;
+}
+
+.zoomLabel {
+  font-size: 0.72rem;
+  color: rgba(0, 0, 0, 0.4);
+  min-width: 36px;
+  text-align: center;
+  font-family: 'Consolas', monospace;
+}
+
+.workflowCanvas {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 40px);
+  background: #f8f9fa;
+  overflow: hidden;
+  user-select: none;
+}
+
+.workflowSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Properties Panel */
+.propsPanel {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 330px !important;
+  height: calc(100% - 40px);
+  background: #ffffff;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  z-index: 10;
+  animation: slideIn 0.2s ease-out;
+}
+
+.propsPanel::-webkit-scrollbar {
+  width: 8px;
+}
+.propsPanel::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+.propsPanel::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+.propsPanel::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.propsPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fafbfc;
+}
+
+.propsPanelTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.propsPanelIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.propsPanelClose {
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.propsPanelClose:hover {
+  color: #1a1a1a;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.propsPanelBody {
+  padding: 0.75rem 1rem;
+}
+
+.propsField {
+  margin-bottom: 0.75rem;
+}
+
+.propsField label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 0.4rem;
+}
+
+.propsField input {
+  width: 100%;
+  padding: 0.55rem 0.75rem !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  color: #1a1a1a !important;
+  font-size: 0.9rem !important;
+  transition: all 0.15s ease !important;
+}
+
+.propsField input:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+}
+
+.propsField input[readOnly] {
+  color: rgba(0, 0, 0, 0.4);
+  cursor: default;
+}
+
+.propsEmpty {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* Custom properties fields styled exactly like reference image */
+.descriptionInput {
+  width: 100%;
+  border: none;
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.08);
+  background: transparent;
+  padding: 0.5rem 0;
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #1a1a1a;
+  outline: none;
+}
+.descriptionInput::placeholder {
+  color: #9cb2cd;
+  opacity: 0.6;
+}
+
+.propsFieldLabel {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 0.4rem;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.varInputWrapper {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  overflow: hidden;
+  transition: all 0.15s ease;
+}
+
+.varInputWrapper:focus-within {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+}
+
+.varInputWrapper input {
+  flex: 1;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0.55rem 0.75rem !important;
+  font-size: 0.9rem !important;
+  color: #1a1a1a !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.varInputWrapper input::placeholder {
+  color: #a0aec0;
+}
+
+.varButton {
+  background: #e2a03f !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0.55rem 0.85rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background 0.15s !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+
+.varButton:hover {
+  background: #d49130 !important;
+}
+
+.customSelect {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  font-size: 0.9rem !important;
+  color: #1a1a1a !important;
+  user-select: none !important;
+  transition: all 0.15s ease !important;
+}
+
+.customSelect:hover {
+  background: #f7fafc !important;
+  border-color: #cbd5e0 !important;
+}
+
+.chevron {
+  font-size: 0.75rem !important;
+  color: #718096 !important;
+  margin-left: 6px !important;
+}
+
+.dropdownOptions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin-top: 5px;
+  z-index: 25;
+  overflow: hidden;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+}
+
+.dropdownOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: #2d3748;
+  transition: background 0.15s;
+}
+
+.dropdownOption:hover {
+  background: #f7fafc;
+}
+
+.dropdownOptionSelected {
+  background: #f0f4ff;
+  color: #2b6cb0;
+  font-weight: 500;
+}
+
+.infoIcon {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  margin-left: 6px;
+}
+
+.toggleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.4rem;
+}
+
+.toggleLabel {
+  font-size: 0.88rem;
+  color: #4a5568;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e2e8f0;
+  transition: .2s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .2s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.switch input:checked + .slider {
+  background-color: #48bb78;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Dark theme overrides */
+[data-theme='dark'] .workflowContainer {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: #0d1117;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .workflowToolbar {
+  background: #161b22;
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .workflowTitle {
+  color: #e6edf3;
+}
+
+[data-theme='dark'] .workflowHints {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme='dark'] .workflowCanvas {
+  background: #0d1117;
+}
+
+[data-theme='dark'] .propsPanel {
+  background: #161b22;
+  border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .propsPanelHeader {
+  background: #1a2233;
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .propsPanelTitle {
+  color: #e6edf3;
+}
+
+[data-theme='dark'] .propsField input {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #e6edf3;
+}
+
+[data-theme='dark'] .workflowControls button {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #c9d1d9;
+}
+
+[data-theme='dark'] .descriptionInput {
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+  color: #e6edf3;
+}
+
+[data-theme='dark'] .propsFieldLabel {
+  color: #a0aec0;
+}
+
+[data-theme='dark'] .varInputWrapper {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme='dark'] .varInputWrapper input {
+  color: #e6edf3 !important;
+}
+
+[data-theme='dark'] .customSelect {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  color: #889bb3;
+}
+
+[data-theme='dark'] .dropdownOptions {
+  background: #161b22;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='dark'] .dropdownOption {
+  color: #c9d1d9;
+}
+
+[data-theme='dark'] .dropdownOption:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme='dark'] .dropdownOptionSelected {
+  background: rgba(88, 166, 255, 0.12);
+  color: #58a6ff;
+}
+
+[data-theme='dark'] .infoIcon,
+[data-theme='dark'] .chevron {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+[data-theme='dark'] .toggleLabel {
+  color: #c9d1d9;
+}
+
+[data-theme='dark'] .slider {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.warningGroup {
+  cursor: help;
+}
+
+.tooltipForeign {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  overflow: visible; /* Prevent truncation */
+}
+
+.warningGroup:hover + .tooltipForeign,
+.tooltipForeign:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.issuesTooltip {
+  background: #1e1e1e;
+  color: #f85149;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(248, 81, 73, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  pointer-events: none;
+}
+
+.issuesTooltip strong {
+  color: #ffffff;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.checkboxGroup {
+  margin-bottom: 0.65rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: #2d3748;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  accent-color: #3b82f6; /* Modern blue accent */
+}
+
+.sectionHeader {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 0.85rem;
+}
+
+/* Dark theme overrides */
+[data-theme='dark'] .checkboxLabel {
+  color: #c9d1d9;
+}
+
+[data-theme='dark'] .checkboxLabel input[type="checkbox"] {
+  border-color: rgba(255, 255, 255, 0.25);
+  accent-color: #58a6ff;
+}
+
+[data-theme='dark'] .sectionHeader {
+  color: #ffffff;
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+.flexRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.customTextarea {
+  flex: 1;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0.55rem 0.75rem !important;
+  font-size: 0.9rem !important;
+  color: #2d3748 !important;
+  font-family: inherit !important;
+  resize: vertical;
+  min-height: 48px;
+  outline: none;
+}
+
+[data-theme='dark'] .customTextarea {
+  color: #e6edf3 !important;
+}
+
+.tagInputWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0.25rem 0.45rem;
+  gap: 0.4rem;
+  min-height: 38px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.keyTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.tagClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.4);
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.tagClose:hover {
+  color: #f85149;
+}
+
+[data-theme='dark'] .tagInputWrapper {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme='dark'] .keyTag {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #c9d1d9;
+}
+
+[data-theme='dark'] .tagClose {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.collapsibleHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #2d3748;
+  cursor: pointer;
+  user-select: none;
+  margin: 0.8rem 0 0.4rem 0;
+}
+
+.collapsibleChevron {
+  font-size: 0.7rem;
+  color: #718096;
+}
+
+.collapsibleContent {
+  padding-left: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+[data-theme='dark'] .collapsibleHeader {
+  color: #e6edf3;
+}
+
+.centeredCheckbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.25rem 0;
+  width: 100%;
+}
+
+.centeredCheckbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+[data-theme='dark'] .propsField input {
+  background: #2d3139 !important;
+  border-color: #30363d !important;
+  color: #e6edf3 !important;
+}
+
+[data-theme='dark'] .customSelect {
+  background: #2d3139 !important;
+  border-color: #30363d !important;
+  color: #e6edf3 !important;
+}
+
+[data-theme='dark'] .varInputWrapper {
+  background: #2d3139 !important;
+  border-color: #30363d !important;
+}
+
+[data-theme='dark'] .varInputWrapper input {
+  color: #e6edf3 !important;
+}
+
+[data-theme='dark'] .centeredCheckbox input[type="checkbox"] {
+  border-color: rgba(255, 255, 255, 0.25);
+  accent-color: #58a6ff;
+}
+
+.iconButton {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  font-size: 1.1rem !important;
+  transition: all 0.15s ease !important;
+  padding: 0 !important;
+}
+
+.iconButton:hover {
+  background: #f7fafc !important;
+  border-color: #cbd5e0 !important;
+}
+
+[data-theme='dark'] .iconButton {
+  background: #2d3139 !important;
+  border-color: #30363d !important;
+}
+
+[data-theme='dark'] .iconButton:hover {
+  background: #3c424e !important;
+}
+
+.workflowControls .toolbarExportBtn {
+  width: auto !important;
+  height: 26px !important;
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0 0.75rem !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease !important;
+  margin-left: 0.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+.workflowControls .toolbarExportBtn:hover {
+  background: #2563eb !important;
+}
+
+[data-theme='dark'] .workflowControls .toolbarExportBtn {
+  background: #1f6feb !important;
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .workflowControls .toolbarExportBtn:hover {
+  background: #388bfd !important;
+}
+
+
+

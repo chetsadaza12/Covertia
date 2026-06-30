@@ -1,0 +1,40 @@
+---
+title: Start
+sidebar_label: Start
+---
+
+import ExportCovertia from '@site/src/components/ExportCovertia';
+import WorkflowPreview from '@site/src/components/WorkflowPreview';
+import startData from '@site/docs/Script/Start.json';
+
+# Start Workflow
+
+ตัวอย่าง Workflow เริ่มต้นของ Covertia ประกอบด้วยบล็อกพื้นฐาน **Trigger → Insert Data → End** สำหรับเริ่มต้นการใช้งานระบบ Automation
+
+## Interactive Workflow Preview
+
+คลิกที่บล็อกเพื่อดูและแก้ไขข้อมูลได้ ลากพื้นหลังเพื่อเลื่อนดู ใช้ Scroll เพื่อซูมเข้า/ออก
+
+<WorkflowPreview data={startData} height={580} />
+
+## Workflow Blocks
+
+| Block | Type | Description |
+|-------|------|-------------|
+| **Start** | `BlockBasic` | จุดเริ่มต้นการทำงานของ Workflow (Manual Trigger) |
+| **Insert Data** | `BlockBasicWithFallback` | บล็อกสำหรับเพิ่มข้อมูลเข้าสู่ระบบ |
+| **End** | `BlockBasic` | จุดสิ้นสุดการทำงาน |
+
+## Export Workflow
+
+คลิกปุ่ม **Export .covertia** ด้านล่างเพื่อดาวน์โหลดไฟล์ Workflow และนำเข้าในโปรแกรม Covertia ได้ทันที
+
+<ExportCovertia data={startData} filename="Start" />
+
+:::tip วิธีใช้งาน
+1. คลิกปุ่ม ** Export .covertia** เพื่อดาวน์โหลดไฟล์
+2. เปิดโปรแกรม Covertia
+3. ไปที่เมนู **Import Workflow**
+4. เลือกไฟล์ `Start.covertia` ที่ดาวน์โหลดไว้
+5. Workflow จะถูกนำเข้าพร้อมใช้งานทันที
+:::
