@@ -1,0 +1,236 @@
+---
+sidebar_position: 6
+title: Frequently Asked Questions (FAQs)
+description: Common questions about Covertia anti-detect browser — profiles, proxies, workflows, tasks, and troubleshooting.
+---
+
+# Frequently Asked Questions (FAQs)
+
+Common questions about **Covertia Anti-detect Browser & Automation Platform**
+
+---
+
+## Browser Profile
+
+### What is a Browser Profile?
+
+A Browser Profile is an isolated browser environment (Sandbox). Each profile has its own Fingerprint, Cookies, Local Storage, and Network Settings — making each profile appear to come from a different device, preventing cross-profile contamination.
+
+### How do I create a Profile?
+
+4 creation methods:
+
+| Mode | Best for |
+|------|----------|
+| **Single Create** | One profile at a time, detailed configuration |
+| **Multiple Create** | Multiple profiles at once |
+| **Import File** | Import from Excel (.xlsx / .csv) |
+| **Import from External** | Scan and import from existing Chrome profiles |
+
+### Why does the Fingerprint need to be consistent?
+
+All values must align:
+
+```
+✅ IP matches Country
+✅ Country matches Timezone
+✅ Language matches region
+✅ Realistic Browser Version
+✅ Geolocation matches IP
+```
+
+Example of **high detection risk**:
+
+```
+❌ Vietnam IP + USA Timezone + Russian Language + Windows + MacOS User-Agent
+```
+
+### How do I configure a Proxy?
+
+SOCKS5 (recommended):
+
+```
+host:port:username:password
+```
+
+HTTP:
+
+```
+http://ip:port:username:password
+```
+
+Use the **Check** button to test the proxy before launching — the system verifies the IP, status, and network connection.
+
+### Which Browser is recommended?
+
+**Chrome** — supports most websites, natural fingerprint, stable, good extension support.
+
+### Which Browser Version should I use?
+
+```
+✅ 138, 139, 140, 141
+❌ Very old versions
+❌ Beta / Canary builds
+```
+
+---
+
+## Fingerprint & Security
+
+### What can Covertia Spoof?
+
+| Category | Options |
+|------|----------|
+| **Canvas** | `real` / `noise` |
+| **WebGL Image** | `real` / `noise` |
+| **WebGL Metadata** | `real` / `custom` (spoof GPU) |
+| **Audio Context** | `real` / `noise` |
+| **WebRTC** | `replace` / `real` / `disabled` |
+| **Fonts** | `default` / `custom` |
+| **Hardware Concurrency** | 2, 4, 8, 10, 12, 16, 20, 24 |
+| **Device Memory** | 2, 4, 8, 10, 12, 16, 20, 24 GB |
+| **Screen Resolution** | `random` / `custom` |
+| **MAC Address** | `real` / `custom` |
+| **Do Not Track** | `default` / `open` / `close` |
+| **Port Scan Protection** | `accept` / `decline` |
+
+### Should I use `noise` or `real`?
+
+- **noise**: Adds noise to mask the real fingerprint — **recommended** for privacy-sensitive tasks.
+- **real**: Uses the device's real fingerprint — higher detection risk when running multiple profiles.
+
+---
+
+## Workflows
+
+### What is a Workflow?
+
+A Workflow is an automation script that runs in the browser — used for repetitive actions like auto login, account warming, form submissions, and can execute across multiple profiles.
+
+### How do I create a Workflow?
+
+1. Go to **Workflows**
+2. Click **New workflow**
+3. Enter a **Name** (include version + platform, e.g. `v1.0.0 Facebook Auto Login`)
+4. Enter a **Description** (max 300 characters)
+5. Click **Create**
+
+### Can I import Workflows?
+
+Yes — click **Import** and upload a saved workflow file.
+
+### How do I manage multiple Workflows?
+
+- **Search**: Filter by name
+- **Delete**: Delete individually or bulk delete using the checkbox
+- **Version**: View the active version tag in the Name column
+
+---
+
+## Tasks (Scheduling)
+
+### What's the difference between a Task and a Workflow?
+
+| | Workflow | Task |
+|------|----------|------|
+| What it is | The script itself | A scheduled run of a script |
+| Runs when | Manually triggered | On a set schedule |
+| Target profiles | ❌ | ✅ By Profile, Group, or ID |
+| Concurrent Threads | ❌ | ✅ |
+| Window Layout | ❌ | ✅ |
+
+### What scheduling options are available?
+
+| Frequency | Behavior |
+|-----------|----------|
+| **Immediate** | Runs instantly on creation |
+| **Once** | Runs once at the scheduled time |
+| **Interval** | Repeats at fixed time gaps |
+| **Every day** | Runs daily at the specified time |
+
+### How many Concurrent Threads should I set?
+
+- Default is **10** — runs 10 profiles simultaneously
+- Increase if your machine has enough CPU/RAM to speed things up
+- Decrease for lower-spec machines or if your proxy has rate limits
+
+### What is Open time between profiles?
+
+The delay (ms) before launching the next Browser Profile — default is 300ms. Helps reduce system load and prevent proxy rate limiting.
+
+---
+
+## Database
+
+### What's the difference between Tables, Variables, and Credentials?
+
+| Feature | Used for | Examples |
+|---------|----------|---------|
+| **Tables** | Structured data (rows/columns) | Account lists, scraper data, target profiles |
+| **Variables** | Key-Value pairs | Runtime parameters, flags, dynamic values |
+| **Credentials** | Sensitive data (encrypted) | Passwords, API tokens |
+
+### What Data Types do Tables support?
+
+- `Any` — Accepts any format
+- `Text` — Character strings
+- `Number` — Numeric values
+- `Boolean` — True/False
+- `Array` — Structured lists
+
+> ⚠️ Deleting a Table, Variable, or Credential is permanent — check dependencies first.
+
+---
+
+## Developer API
+
+### Is there an API?
+
+Yes — the Covertia Core API runs at `http://localhost:1010`:
+
+| Endpoint | Purpose |
+|----------|----------|
+| `/api/profiles` | CRUD, start, close, check status |
+| `/api/scripts` | List, execute, check status, kill |
+| `/api/groups` | List Profile Groups |
+| `/api/browser_versions` | List available Browser Versions |
+| `/api/locations` | List supported Geographic Locations |
+
+---
+
+## Troubleshooting
+
+### Profiles look suspicious / keep getting banned?
+
+Run the **Fingerprint Consistency Checklist**:
+
+1. Does the IP match the Country?
+2. Does the Timezone match the IP?
+3. Does the Language match the region?
+4. Does the User-Agent match the actual OS/Browser?
+5. Does the Geolocation match the Proxy location?
+6. Is the Browser Version realistic?
+
+### Proxy not working?
+
+1. Click **Check** to test the proxy in Profile → Network
+2. Verify the format: `host:port:username:password`
+3. Confirm the Proxy Type matches your provider (SOCKS5 / HTTP)
+
+### Task not running on schedule?
+
+- **Starting Time** must be at least **2 minutes** ahead of the current time
+- The Toggle **ON/OFF** on the Tasks page must be enabled (green)
+- At least 1 profile must be selected in the **Profiles Tab**
+- Check **Schedule History** to review past executions
+
+### Import File failing validation?
+
+- Download the **Template File** before filling in data
+- The **Name** column must not be empty
+- Proxy must use the format `ip:port:username:password`
+- Check Valid/Invalid counts in **Profile Stats** before clicking Import
+
+---
+
+_More questions? See [General Information](/docs/General%20Information) or [API Reference](/docs/API)_
