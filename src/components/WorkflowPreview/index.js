@@ -23,6 +23,7 @@ const BLOCK_ICONS = {
   'riRestore': { emoji: '🗖', color: '#ffffff', bgColor: '#8b5cf6' },
   'riTabletLine': { emoji: '📱', color: '#ffffff', bgColor: '#8b5cf6' },
   'riRouterLine': { emoji: '📶', color: '#ffffff', bgColor: '#8b5cf6' },
+  'riArrowLeftRightLine': { emoji: '⇄', color: '#ffffff', bgColor: '#3b82f6' },
   'default': { emoji: '⚙', color: '#ffffff', bgColor: '#58a6ff' },
 };
 
@@ -55,6 +56,7 @@ const LABEL_MAP = {
   'emulate': 'Emulate',
   'networkToggle': 'Network Toggle',
   'zoomPage': 'Zoom Page',
+  'switch-tab': 'Switch Tab',
   'power-shell': 'PowerShell',
   'loop': 'Loop',
   'conditions': 'Conditions',
@@ -1087,6 +1089,15 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
   // Zoom Page states
   const [zoomSize, setZoomSize] = useState(node.data?.zoom || 100);
 
+  // Switch Tab states
+  const [switchFindBy, setSwitchFindBy] = useState(node.data?.findTabBy || 'match-patterns');
+  const [switchFindByOpen, setSwitchFindByOpen] = useState(false);
+  const [switchMatchPattern, setSwitchMatchPattern] = useState(node.data?.matchPattern || '');
+  const [switchTabTitle, setSwitchTabTitle] = useState(node.data?.tabTitle || '');
+  const [switchTabIndex, setSwitchTabIndex] = useState(node.data?.tabIndex || '0');
+  const [switchCreateIfNoMatch, setSwitchCreateIfNoMatch] = useState(node.data?.createIfNoMatch || false);
+  const [switchActiveTab, setSwitchActiveTab] = useState(node.data?.activeTab !== false);
+
   // Mouse Click & Input Text states
   const [selector, setSelector] = useState('');
   const [selectorType, setSelectorType] = useState('XPath');
@@ -1265,6 +1276,15 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
 
     // Zoom Page
     setZoomSize(node.data?.zoom || 100);
+
+    // Switch Tab
+    setSwitchFindBy(node.data?.findTabBy || 'match-patterns');
+    setSwitchFindByOpen(false);
+    setSwitchMatchPattern(node.data?.matchPattern || '');
+    setSwitchTabTitle(node.data?.tabTitle || '');
+    setSwitchTabIndex(node.data?.tabIndex || '0');
+    setSwitchCreateIfNoMatch(node.data?.createIfNoMatch || false);
+    setSwitchActiveTab(node.data?.activeTab !== false);
 
     // Close dropdowns
     setDropdownOpen(false);
@@ -3104,6 +3124,160 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
                 </label>
                 <span className={styles.toggleLabel}>Enable</span>
               </div>
+            </div>
+          </>
+        ) : node.label === 'switch-tab' ? (
+          <>
+            {/* Divider below global description */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Find tab by Dropdown */}
+            <div className={styles.propsField} style={{ position: 'relative' }}>
+              <label className={styles.propsFieldLabel}>Find tab by</label>
+              <div
+                className={styles.customSelect}
+                onClick={() => setSwitchFindByOpen(!switchFindByOpen)}
+              >
+                <span>
+                  {switchFindBy === 'match-patterns' ? 'Match patterns' :
+                   switchFindBy === 'tab-title' ? 'Tab title' :
+                   switchFindBy === 'next-tab' ? 'Next tab' :
+                   switchFindBy === 'prev-tab' ? 'Previous tab' :
+                   switchFindBy === 'tab-index' ? 'Tab index' : switchFindBy}
+                </span>
+                <span className={styles.chevron}>{switchFindByOpen ? '▲' : '▼'}</span>
+              </div>
+              {switchFindByOpen && (
+                <div className={styles.dropdownOptions}>
+                  {[
+                    { value: 'match-patterns', label: 'Match patterns' },
+                    { value: 'tab-title', label: 'Tab title' },
+                    { value: 'next-tab', label: 'Next tab' },
+                    { value: 'prev-tab', label: 'Previous tab' },
+                    { value: 'tab-index', label: 'Tab index' }
+                  ].map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`${styles.dropdownOption} ${switchFindBy === opt.value ? styles.dropdownOptionSelected : ''}`}
+                      onClick={() => {
+                        setSwitchFindBy(opt.value);
+                        onUpdate(node.id, 'findTabBy', opt.value);
+                        setSwitchFindByOpen(false);
+                      }}
+                    >
+                      <span>{opt.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Conditional fields based on findTabBy */}
+            {switchFindBy === 'match-patterns' && (
+              <div className={styles.propsField}>
+                <label className={styles.propsFieldLabel}>Match Patterns <span style={{ fontSize: '0.75rem', color: '#a0aec0', cursor: 'help' }}>ⓘ</span></label>
+                <VariableInput
+                  placeholder="https://example.com/*"
+                  value={switchMatchPattern}
+                  onChange={(val) => {
+                    setSwitchMatchPattern(val);
+                    onUpdate(node.id, 'matchPattern', val);
+                  }}
+                  parameters={parameters}
+                />
+              </div>
+            )}
+
+            {switchFindBy === 'tab-title' && (
+              <div className={styles.propsField}>
+                <label className={styles.propsFieldLabel}>Tab title</label>
+                <VariableInput
+                  placeholder="Tab title"
+                  value={switchTabTitle}
+                  onChange={(val) => {
+                    setSwitchTabTitle(val);
+                    onUpdate(node.id, 'tabTitle', val);
+                  }}
+                  parameters={parameters}
+                />
+              </div>
+            )}
+
+            {switchFindBy === 'tab-index' && (
+              <div className={styles.propsField}>
+                <label className={styles.propsFieldLabel}>Tab index</label>
+                <input
+                  type="number"
+                  value={switchTabIndex}
+                  onChange={(e) => {
+                    setSwitchTabIndex(e.target.value);
+                    onUpdate(node.id, 'tabIndex', e.target.value);
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Create if no match checkbox */}
+            {(switchFindBy === 'match-patterns' || switchFindBy === 'tab-title') && (
+              <div className={styles.checkboxGroup} style={{ marginTop: '0.75rem' }}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={switchCreateIfNoMatch}
+                    onChange={(e) => {
+                      setSwitchCreateIfNoMatch(e.target.checked);
+                      onUpdate(node.id, 'createIfNoMatch', e.target.checked);
+                    }}
+                  />
+                  <span>Create if there's no match</span>
+                </label>
+              </div>
+            )}
+
+            {/* Set as active tab checkbox */}
+            <div className={styles.checkboxGroup} style={{ marginTop: '0.5rem' }}>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={switchActiveTab}
+                  onChange={(e) => {
+                    setSwitchActiveTab(e.target.checked);
+                    onUpdate(node.id, 'activeTab', e.target.checked);
+                  }}
+                  style={{ accentColor: '#3b82f6' }}
+                />
+                <span>Set as active tab</span>
+              </label>
+            </div>
+
+            {/* Divider */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Settings Section */}
+            <h4 className={styles.sectionHeader} style={{ borderTop: 'none', paddingTop: 0, marginTop: 0 }}>Settings</h4>
+
+            {/* Timeout */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Timeout (millisecond)</label>
+              <input
+                type="number"
+                value={timeout}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10) || 0;
+                  setTimeoutVal(val);
+                  onUpdate(node.id, 'timeout', val);
+                }}
+              />
+            </div>
+
+            {/* Delay time */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Delay time (millisecond)</label>
+              <input
+                type="number"
+                value={delay}
+                onChange={handleDelayChange}
+              />
             </div>
           </>
         ) : node.label === 'resource-status' ? (
