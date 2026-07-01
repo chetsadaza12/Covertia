@@ -332,7 +332,8 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
   margin-top: 5px !important;
   z-index: 9999 !important;
-  overflow: hidden !important;
+  max-height: 250px !important;
+  overflow-y: auto !important;
 }
 
 .dropdownOption {

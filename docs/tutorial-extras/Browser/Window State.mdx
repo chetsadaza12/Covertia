@@ -1,0 +1,49 @@
+---
+title: Window State
+sidebar_label: Window State
+sidebar_position: 1
+---
+
+import WorkflowPreview from '@site/src/components/WorkflowPreview';
+import windowStateData from '@site/docs/Script/Window State.json';
+
+# Window State Workflow
+
+ตัวอย่าง Workflow สาธิตการทำงานของบล็อก **Window State** ซึ่งเป็นคำสั่งสำหรับการปรับแต่งและควบคุมขนาดของหน้าต่างเบราว์เซอร์เป้าหมาย (Browser Window Control) เช่น การย่อ ยืด หรือปรับให้เต็มจอ เพื่อให้เวิร์กโฟลว์ทำงานกับขนาดหน้าต่างที่ต้องการหรือช่วยลดการรบกวนหน้าจอขณะระบบรันงานอัตโนมัติ
+
+## Interactive Workflow Preview
+
+คลิกที่บล็อกเพื่อปรับตั้งค่าขนาดหน้าต่าง ลากเพื่อย้ายมุมมอง หรือ Scroll เพื่อย่อ/ขยายรูป
+
+<WorkflowPreview data={windowStateData} height={580} />
+
+## Workflow Blocks
+
+| Block | Type | Description |
+|-------|------|-------------|
+| **Start (Trigger)** | `BlockBasic` | จุดเริ่มต้นทำงานเวิร์กโฟลว์ |
+| **Open URL** | `BlockBasicWithFallback` | เปิดหน้าเบราว์เซอร์ปลายทาง |
+| **Window State** | `BlockBasicWithFallback` | ปรับขนาดและสถานะแสดงผลของหน้าต่างเบราว์เซอร์เป้าหมาย |
+
+## การตั้งค่าบล็อก Window State
+
+บล็อก **Window State** ช่วยให้เบราว์เซอร์เป้าหมายปรับเปลี่ยนรูปแบบหน้าต่างตามโหมดต่าง ๆ
+
+### ค่าพารามิเตอร์หลัก
+
+| พารามิเตอร์ | คำอธิบาย | ตัวเลือก / รายละเอียดเพิ่มเติม |
+| :--- | :--- | :--- |
+| **Description** | คำอธิบายรายละเอียดสั้น ๆ สำหรับบล็อกนี้ | แสดงผลเป็นฟิลด์หัวเรื่องไร้กรอบด้านบนสุด |
+| **Device** | สถานะหน้าต่างแสดงผลที่ต้องการ | • `Minimized` (ย่อหน้าต่างลง Taskbar)<br/>• `Normal` (แสดงผลหน้าต่างขนาดปกติ)<br/>• `Maximized` (ขยายหน้าต่างแสดงผลเต็มหน้าจอ) |
+
+### ค่าในส่วน Settings
+
+*   **Timeout (millisecond)**: กำหนดเวลาสูงสุดในการทำงานของบล็อกนี้
+*   **Delay time (millisecond)**: เวลาหน่วงก่อนเริ่มประมวลผลคำสั่งในบล็อก
+
+---
+
+### กรณีการใช้งาน (Use Cases)
+
+*   **Minimize on Run**: สั่งย่อหน้าต่างเบราว์เซอร์ที่เวิร์กโฟลว์เพิ่งเปิดขึ้นมาลงไปยัง Taskbar ทันที เพื่อไม่ให้หน้าต่างรบกวนหน้าจอหลักของผู้ใช้งานขณะกำลังทำงานอื่น ๆ ควบคู่กันไป
+*   **Maximize for Rendering**: ขยายหน้าต่างเต็มจอเมื่อต้องการความกว้างของหน้าจอในการถ่ายภาพหน้าจอ (Take Screenshot) หรือมองหาอิลิเมนต์ที่ซ่อนอยู่ใน Responsive Layout ขนาดเล็ก

@@ -97,3 +97,51 @@ body.homepage-layout .footer__copyright {
   font-size: 0.88rem;
   color: rgba(255, 255, 255, 0.45) !important;
 }
+
+/* ===== Sidebar Tree Lines ===== */
+
+/* Vertical line on the left side of category items list */
+.theme-doc-sidebar-item-category > .menu__list {
+  position: relative;
+  margin-left: 0.75rem;
+  padding-left: 0.85rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='dark'] .theme-doc-sidebar-item-category > .menu__list {
+  border-left-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Horizontal branch line on each child item */
+.theme-doc-sidebar-item-category > .menu__list > .menu__list-item {
+  position: relative;
+}
+
+.theme-doc-sidebar-item-category > .menu__list > .menu__list-item::before {
+  content: '';
+  position: absolute;
+  left: -0.85rem;
+  top: 0.85rem;
+  width: 0.7rem;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='dark'] .theme-doc-sidebar-item-category > .menu__list > .menu__list-item::before {
+  border-top-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Round the corner on the last child item (L-shape) */
+.theme-doc-sidebar-item-category > .menu__list > .menu__list-item:last-child::after {
+  content: '';
+  position: absolute;
+  left: -0.86rem;
+  top: 0.85rem;
+  width: 0;
+  height: calc(100% - 0.85rem + 0.5rem);
+  border-left: 1px solid var(--ifm-background-color, #F0F0F0);
+}
+
+[data-theme='dark'] .theme-doc-sidebar-item-category > .menu__list > .menu__list-item:last-child::after {
+  border-left-color: var(--ifm-background-color, #111111);
+}

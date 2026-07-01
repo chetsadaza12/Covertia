@@ -20,6 +20,9 @@ const BLOCK_ICONS = {
   'riSignalWifiLine': { emoji: '⏳', color: '#ffffff', bgColor: '#10b981' },
   'riTimerFlashLine': { emoji: '⏳', color: '#ffffff', bgColor: '#10b981' },
   'riSettings3Line': { emoji: '⚙️', color: '#ffffff', bgColor: '#2ea043' },
+  'riRestore': { emoji: '🗖', color: '#ffffff', bgColor: '#8b5cf6' },
+  'riTabletLine': { emoji: '📱', color: '#ffffff', bgColor: '#8b5cf6' },
+  'riRouterLine': { emoji: '📶', color: '#ffffff', bgColor: '#8b5cf6' },
   'default': { emoji: '⚙', color: '#ffffff', bgColor: '#58a6ff' },
 };
 
@@ -48,6 +51,10 @@ const LABEL_MAP = {
   'blocks-group': 'Blocks Group',
   'wait-connections': 'Wait Connections',
   'workflow-state': 'Workflow State',
+  'window-state': 'Window State',
+  'emulate': 'Emulate',
+  'networkToggle': 'Network Toggle',
+  'zoomPage': 'Zoom Page',
   'power-shell': 'PowerShell',
   'loop': 'Loop',
   'conditions': 'Conditions',
@@ -1064,6 +1071,22 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
   const [workflowActionTypeOpen, setWorkflowActionTypeOpen] = useState(false);
   const [workflowExceptCurrent, setWorkflowExceptCurrent] = useState(node.data?.exceptCurrent || false);
 
+  // Window State states
+  const [windowModelState, setWindowModelState] = useState(node.data?.model || 'minimized');
+  const [windowModelStateOpen, setWindowModelStateOpen] = useState(false);
+
+  // Emulate states
+  const [emulateDevice, setEmulateDevice] = useState(node.data?.model || 'iPhone 11');
+  const [emulateDeviceOpen, setEmulateDeviceOpen] = useState(false);
+
+  // Network Toggle states
+  const [networkScope, setNetworkScope] = useState(node.data?.scope || 'allTabs');
+  const [networkScopeOpen, setNetworkScopeOpen] = useState(false);
+  const [networkStatus, setNetworkStatus] = useState(node.data?.status !== false);
+
+  // Zoom Page states
+  const [zoomSize, setZoomSize] = useState(node.data?.zoom || 100);
+
   // Mouse Click & Input Text states
   const [selector, setSelector] = useState('');
   const [selectorType, setSelectorType] = useState('XPath');
@@ -1226,6 +1249,22 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
     setWorkflowActionType(node.data?.type || 'stop-current');
     setWorkflowActionTypeOpen(false);
     setWorkflowExceptCurrent(node.data?.exceptCurrent || false);
+
+    // Window State
+    setWindowModelState(node.data?.model || 'minimized');
+    setWindowModelStateOpen(false);
+
+    // Emulate
+    setEmulateDevice(node.data?.model || 'iPhone 11');
+    setEmulateDeviceOpen(false);
+
+    // Network Toggle
+    setNetworkScope(node.data?.scope || 'allTabs');
+    setNetworkScopeOpen(false);
+    setNetworkStatus(node.data?.status !== false);
+
+    // Zoom Page
+    setZoomSize(node.data?.zoom || 100);
 
     // Close dropdowns
     setDropdownOpen(false);
@@ -2716,6 +2755,355 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
                 value={delay}
                 onChange={handleDelayChange}
               />
+            </div>
+          </>
+        ) : node.label === 'window-state' ? (
+          <>
+            {/* Divider below global description */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Device Dropdown */}
+            <div className={styles.propsField} style={{ position: 'relative' }}>
+              <label className={styles.propsFieldLabel}>Device</label>
+              <div
+                className={styles.customSelect}
+                onClick={() => setWindowModelStateOpen(!windowModelStateOpen)}
+              >
+                <span>
+                  {windowModelState === 'minimized' ? 'Minimized' :
+                   windowModelState === 'normal' ? 'Normal' :
+                   windowModelState === 'maximized' ? 'Maximized' : windowModelState}
+                </span>
+                <span className={styles.chevron}>{windowModelStateOpen ? '▲' : '▼'}</span>
+              </div>
+              {windowModelStateOpen && (
+                <div className={styles.dropdownOptions}>
+                  {[
+                    { value: 'minimized', label: 'Minimized' },
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'maximized', label: 'Maximized' }
+                  ].map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`${styles.dropdownOption} ${windowModelState === opt.value ? styles.dropdownOptionSelected : ''}`}
+                      onClick={() => {
+                        setWindowModelState(opt.value);
+                        onUpdate(node.id, 'model', opt.value);
+                        setWindowModelStateOpen(false);
+                      }}
+                    >
+                      <span>{opt.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Divider */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Settings Section */}
+            <h4 className={styles.sectionHeader} style={{ borderTop: 'none', paddingTop: 0, marginTop: 0 }}>Settings</h4>
+
+            {/* Timeout */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Timeout (millisecond)</label>
+              <input
+                type="number"
+                value={timeout}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10) || 0;
+                  setTimeoutVal(val);
+                  onUpdate(node.id, 'timeout', val);
+                }}
+              />
+            </div>
+
+            {/* Delay time */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Delay time (millisecond)</label>
+              <input
+                type="number"
+                value={delay}
+                onChange={handleDelayChange}
+              />
+            </div>
+          </>
+        ) : node.label === 'emulate' ? (
+          <>
+            {/* Divider below global description */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Device Dropdown */}
+            <div className={styles.propsField} style={{ position: 'relative' }}>
+              <label className={styles.propsFieldLabel}>Device</label>
+              <div
+                className={styles.customSelect}
+                onClick={() => setEmulateDeviceOpen(!emulateDeviceOpen)}
+              >
+                <span>{emulateDevice}</span>
+                <span className={styles.chevron}>{emulateDeviceOpen ? '▲' : '▼'}</span>
+              </div>
+              {emulateDeviceOpen && (
+                <div className={styles.dropdownOptions} style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                  {[
+                    'Blackberry PlayBook',
+                    'Blackberry PlayBook landscape',
+                    'BlackBerry Z30',
+                    'BlackBerry Z30 landscape',
+                    'Galaxy Note 3',
+                    'Galaxy Note 3 landscape',
+                    'Galaxy Note II',
+                    'Galaxy Note II landscape',
+                    'Galaxy S III',
+                    'Galaxy S III landscape',
+                    'Galaxy S5',
+                    'Galaxy S5 landscape',
+                    'Galaxy S8',
+                    'Galaxy S8 landscape',
+                    'Galaxy S9+',
+                    'Galaxy S9+ landscape',
+                    'Galaxy Tab S4',
+                    'Galaxy Tab S4 landscape',
+                    'iPad',
+                    'iPad landscape',
+                    'iPad (gen 7)',
+                    'iPad (gen 7) landscape',
+                    'iPad Mini',
+                    'iPad Mini landscape',
+                    'iPad Pro',
+                    'iPad Pro landscape',
+                    'iPad Pro 11',
+                    'iPad Pro 11 landscape',
+                    'iPhone 4',
+                    'iPhone 4 landscape',
+                    'iPhone 5',
+                    'iPhone 5 landscape',
+                    'iPhone 6',
+                    'iPhone 6 landscape',
+                    'iPhone 6 Plus',
+                    'iPhone 6 Plus landscape',
+                    'iPhone 7',
+                    'iPhone 7 landscape',
+                    'iPhone 7 Plus',
+                    'iPhone 7 Plus landscape',
+                    'iPhone 8',
+                    'iPhone 8 Plus',
+                    'iPhone X',
+                    'iPhone 11',
+                    'Nexus 7',
+                    'Nexus 7 landscape',
+                    'Nokia Lumia 520',
+                    'Nokia Lumia 520 landscape',
+                    'Nokia N9',
+                    'Nokia N9 landscape',
+                    'Pixel 2',
+                    'Pixel 2 landscape',
+                    'Pixel 2 XL',
+                    'Pixel 2 XL landscape',
+                    'Pixel 3',
+                    'Pixel 3 landscape',
+                    'Pixel 4',
+                    'Pixel 4 landscape',
+                    'Pixel 4a (5G)',
+                    'Pixel 4a (5G) landscape',
+                    'Pixel 5',
+                    'Pixel 5 landscape',
+                    'Moto G4',
+                    'Moto G4 landscape'
+                  ].map(opt => (
+                    <div
+                      key={opt}
+                      className={`${styles.dropdownOption} ${emulateDevice === opt ? styles.dropdownOptionSelected : ''}`}
+                      onClick={() => {
+                        setEmulateDevice(opt);
+                        onUpdate(node.id, 'model', opt);
+                        setEmulateDeviceOpen(false);
+                      }}
+                    >
+                      <span>{opt}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Divider */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Settings Section */}
+            <h4 className={styles.sectionHeader} style={{ borderTop: 'none', paddingTop: 0, marginTop: 0 }}>Settings</h4>
+
+            {/* Timeout */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Timeout (millisecond)</label>
+              <input
+                type="number"
+                value={timeout}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10) || 0;
+                  setTimeoutVal(val);
+                  onUpdate(node.id, 'timeout', val);
+                }}
+              />
+            </div>
+
+            {/* Delay time */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Delay time (millisecond)</label>
+              <input
+                type="number"
+                value={delay}
+                onChange={handleDelayChange}
+              />
+            </div>
+          </>
+        ) : node.label === 'networkToggle' ? (
+          <>
+            {/* Divider below global description */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Scope Dropdown */}
+            <div className={styles.propsField} style={{ position: 'relative' }}>
+              <div
+                className={styles.customSelect}
+                onClick={() => setNetworkScopeOpen(!networkScopeOpen)}
+              >
+                <span>{networkScope === 'allTabs' ? 'All tabs' : 'Active tab'}</span>
+                <span className={styles.chevron}>{networkScopeOpen ? '▲' : '▼'}</span>
+              </div>
+              {networkScopeOpen && (
+                <div className={styles.dropdownOptions}>
+                  {[
+                    { value: 'activeTab', label: 'Active tab' },
+                    { value: 'allTabs', label: 'All tabs' }
+                  ].map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`${styles.dropdownOption} ${networkScope === opt.value ? styles.dropdownOptionSelected : ''}`}
+                      onClick={() => {
+                        setNetworkScope(opt.value);
+                        onUpdate(node.id, 'scope', opt.value);
+                        setNetworkScopeOpen(false);
+                      }}
+                    >
+                      <span>{opt.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Network Toggle Status Switch */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1rem 0' }}>
+              <span style={{ fontSize: '0.88rem', color: '#2d3748', fontWeight: 500 }}>Close</span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  checked={networkStatus}
+                  onChange={(e) => {
+                    setNetworkStatus(e.target.checked);
+                    onUpdate(node.id, 'status', e.target.checked);
+                  }}
+                />
+                <span className={styles.slider}></span>
+              </label>
+              <span style={{ fontSize: '0.88rem', color: '#2d3748', fontWeight: 500 }}>Open</span>
+            </div>
+
+            {/* Divider */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Settings Section */}
+            <h4 className={styles.sectionHeader} style={{ borderTop: 'none', paddingTop: 0, marginTop: 0 }}>Settings</h4>
+
+            {/* Timeout */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Timeout (millisecond)</label>
+              <input
+                type="number"
+                value={timeout}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10) || 0;
+                  setTimeoutVal(val);
+                  onUpdate(node.id, 'timeout', val);
+                }}
+              />
+            </div>
+
+            {/* Delay time */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Delay time (millisecond)</label>
+              <input
+                type="number"
+                value={delay}
+                onChange={handleDelayChange}
+              />
+            </div>
+          </>
+        ) : node.label === 'zoomPage' ? (
+          <>
+            {/* Divider below global description */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Zoom size Input */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Zoom size</label>
+              <VariableInput
+                placeholder="100"
+                value={String(zoomSize)}
+                onChange={(val) => {
+                  setZoomSize(val);
+                  onUpdate(node.id, 'zoom', val);
+                }}
+                parameters={parameters}
+              />
+            </div>
+
+            {/* Divider */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Settings Section */}
+            <h4 className={styles.sectionHeader} style={{ borderTop: 'none', paddingTop: 0, marginTop: 0 }}>Settings</h4>
+
+            {/* Timeout */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Timeout (millisecond)</label>
+              <input
+                type="number"
+                value={timeout}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10) || 0;
+                  setTimeoutVal(val);
+                  onUpdate(node.id, 'timeout', val);
+                }}
+              />
+            </div>
+
+            {/* Delay time */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Delay time (millisecond)</label>
+              <input
+                type="number"
+                value={delay}
+                onChange={handleDelayChange}
+              />
+            </div>
+
+            {/* On Error Section */}
+            <h4 className={styles.sectionHeader} style={{ borderTop: 'none', paddingTop: 0, marginTop: 0 }}>On error</h4>
+            <div className={styles.propsField}>
+              <div className={styles.toggleWrapper}>
+                <label className={styles.switch}>
+                  <input
+                    type="checkbox"
+                    checked={onErrorEnabled}
+                    onChange={handleOnErrorToggle}
+                  />
+                  <span className={styles.slider}></span>
+                </label>
+                <span className={styles.toggleLabel}>Enable</span>
+              </div>
             </div>
           </>
         ) : node.label === 'resource-status' ? (

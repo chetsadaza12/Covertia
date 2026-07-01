@@ -1,0 +1,49 @@
+---
+title: Emulate
+sidebar_label: Emulate
+sidebar_position: 2
+---
+
+import WorkflowPreview from '@site/src/components/WorkflowPreview';
+import emulateData from '@site/docs/Script/Emulate.json';
+
+# Emulate Workflow
+
+ตัวอย่าง Workflow สาธิตการทำงานของบล็อก **Emulate** ซึ่งเป็นคำสั่งจำลองอุปกรณ์สื่อสารและอุปกรณ์พกพาต่าง ๆ (Device Emulation) เช่น สมาร์ตโฟน (iPhone, Galaxy) และแท็บเล็ต (iPad) เพื่อใช้ในการทดสอบการแสดงผลหน้าเว็บเพจแบบ Responsive และการรันบอตจำลองสภาพแวดล้อมให้ตรงกับผู้ใช้งานแพลตฟอร์มมือถือ
+
+## Interactive Workflow Preview
+
+คลิกที่บล็อกเพื่อเลือกจำลองอุปกรณ์ ลากย้ายหน้าจอ และ Scroll เพื่อซูมเข้า/ออก
+
+<WorkflowPreview data={emulateData} height={580} />
+
+## Workflow Blocks
+
+| Block | Type | Description |
+|-------|------|-------------|
+| **Start (Trigger)** | `BlockBasic` | จุดเริ่มต้นทำงานเวิร์กโฟลว์ |
+| **Open URL** | `BlockBasicWithFallback` | เปิดหน้าเบราว์เซอร์เป้าหมาย |
+| **Emulate** | `BlockBasicWithFallback` | บล็อกจำลองและสลับมุมมองหน้าจอตามประเภทอุปกรณ์เคลื่อนที่ที่กำหนด |
+
+## การตั้งค่าบล็อก Emulate
+
+บล็อก **Emulate** รองรับการเลือกอุปกรณ์เป้าหมายที่ต้องการจำลองเพื่อรันหน้าเว็บเพจ
+
+### ค่าพารามิเตอร์หลัก
+
+| พารามิเตอร์ | คำอธิบาย | ตัวเลือก / รายละเอียดเพิ่มเติม |
+| :--- | :--- | :--- |
+| **Description** | คำอธิบายรายละเอียดสั้น ๆ สำหรับบล็อกนี้ | แสดงผลเป็นฟิลด์หัวเรื่องไร้กรอบด้านบนสุด |
+| **Device** | รายชื่ออุปกรณ์สมาร์ตโฟนและแท็บเล็ตที่ต้องการจำลอง | ปรากฏรายการแบบ Scrollable ค้นหา เช่น:<br/>• `iPhone 11` (ค่าเริ่มต้น)<br/>• `iPhone X`, `iPhone 8/7/6 Plus`<br/>• `iPad Pro`, `iPad Mini` (แนวตั้ง/แนวนอน)<br/>• `Galaxy S9+ / S5` |
+
+### ค่าในส่วน Settings
+
+*   **Timeout (millisecond)**: กำหนดเวลาสูงสุดในการทำงานของบล็อกนี้
+*   **Delay time (millisecond)**: เวลาหน่วงก่อนเริ่มประมวลผลคำสั่งในบล็อก
+
+---
+
+### กรณีการใช้งาน (Use Cases)
+
+*   **Responsive & Mobile Testing**: จำลองเปิดหน้าเว็บในรูปแบบหน้าจอมือถือ (เช่น `iPhone 11`) เพื่อตรวจสอบการจัดวางหน้าเว็บเพจ ระบบนำทาง หรือปุ่มกดว่าแสดงผลได้ถูกต้องและมีประสิทธิภาพตามมาตรฐาน
+*   **Mobile-Only Content Automation**: หน้าเว็บไซต์บางประเภทจะเปิดหน้าฟังก์ชันบางอย่างได้เฉพาะบนอุปกรณ์มือถือเท่านั้น (เช่น การอัปโหลดรูปเฉพาะในเว็บแอปบางตัว) บล็อกนี้จะช่วยหลอก User-Agent และ Viewport ของเบราว์เซอร์ให้กลายเป็นมือถือทันที
