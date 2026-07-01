@@ -1,0 +1,56 @@
+---
+title: Browser Request
+sidebar_label: Browser Request
+sidebar_position: 11
+---
+
+import WorkflowPreview from '@site/src/components/WorkflowPreview';
+import browserRequestData from '@site/docs/Script/Browser Request.json';
+
+# Browser Request Workflow
+
+ตัวอย่าง Workflow สาธิตการทำงานของบล็อก **Browser Request** ซึ่งเป็นคำสั่งที่ใช้ในการส่ง HTTP Request (GET, POST, PUT, PATCH, DELETE, HEAD) จากเบราว์เซอร์เป้าหมายโดยตรงโดยใช้ Context การล็อกอิน คุกกี้ และเซสชันในเบราว์เซอร์นั้น ๆ ในการเข้าถึง API ปลายทาง เพื่อทำงานร่วมกับข้อมูลเว็บแอปภายนอก
+
+## Interactive Workflow Preview
+
+คลิกที่บล็อกเพื่อดูและแก้ไขข้อมูลได้ ลากพื้นหลังเพื่อเลื่อนดู ใช้ Scroll เพื่อซูมเข้า/ออก
+
+<WorkflowPreview data={browserRequestData} height={580} />
+
+## Workflow Blocks
+
+| Block | Type | Description |
+|-------|------|-------------|
+| **Start (Trigger)** | `BlockBasic` | จุดเริ่มต้นการทำงาน พร้อมพารามิเตอร์เริ่มต้นสร้างฟอร์มรับข้อมูล |
+| **Open URL** | `BlockBasicWithFallback` | เปิดหน้าเบราว์เซอร์ไปยังหน้าเว็บเป้าหมายเพื่อสร้างเซสชันและ Cookie |
+| **Browser Request** | `BlockBasicWithFallback` | ยิงเชื่อมต่อ API ปลายทางเพื่อรับ-ส่งข้อมูลบน Context ของเว็บปัจจุบัน |
+
+## การตั้งค่าบล็อก Browser Request
+
+บล็อก **Browser Request** รองรับการปรับแต่งค่า Headers, Body และกลไกบันทึกผลลัพธ์ (Response Extraction)
+
+### ค่าพารามิเตอร์หลัก
+
+| พารามิเตอร์ | คำอธิบาย | ตัวเลือก / รายละเอียดเพิ่มเติม |
+| :--- | :--- | :--- |
+| **Request method** | เมธอดของ HTTP Request | `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD` |
+| **Request URL\*** | ลิงก์ URL ของ API ปลายทางที่ต้องการส่งคำสั่ง | รองรับการใช้ตัวแปรจากเครื่องมือส้ม `{x}` (เช่น `{{variables.api_endpoint}}`) |
+| **Content type** | รูปแบบเนื้อหาของบอดี้ข้อมูลที่ส่ง | `application/json` (แนะนำ), `text/plain`, `multipart/form-data`, `application/x-www-form-urlencoded` |
+| **Timeout (0 to disable)**| เวลาจำกัดสูงสุดในการรอผลตอบกลับ (มิลลิวินาที) | ป้อนเลข `10000` (เท่ากับ 10 วินาที) หรือใส่ `0` เพื่อปิดขีดจำกัด |
+
+### การตั้งค่าแท็บเสริม (Tabs Configuration)
+
+*   **Headers**: ใส่ Object ของ Header (ในรูปแบบ JSON เช่น `{"Authorization": "Bearer token"}`)
+*   **Body**: ใส่เนื้อหาข้อมูลที่จะส่งแนบไปกับ Request (ในรูปแบบ JSON เช่น `{"name": "Jed"}`)
+*   **Response**:
+    *   **Data path type**: รูปแบบข้อมูลส่งกลับ (`JSON`, `Text`, `Headers`)
+    *   **Data path**: พาธเจาะจงของข้อมูลปลายทางที่ต้องการดึง (เช่น `data.user.id`) รองรับปุ่ม `{x}`
+    *   **Assign to variable**: หากเปิดใช้งาน จะสามารถนำผลลัพธ์บันทึกลงตัวแปร (Variable Name) ได้
+    *   **Insert to table**: หากเปิดใช้งาน จะนำผลลัพธ์ที่ดึงได้ไปป้อนลงคอลัมน์ของตารางข้อมูลส่วนกลางในโปรเจกต์
+
+---
+
+### ข้อดีและกรณีการใช้งาน (Use Cases)
+
+*   **บายพาสด่านตรวจสอบการลงชื่อเข้าใช้ (Bypass Authentication)**: เนื่องจากส่งจากในเบราว์เซอร์ที่เป็นปัจจุบัน ทำให้คุณสามารถส่งคำสั่งเข้าหา API สตรีมหลังบ้านของเว็บไซต์ที่ต้องลงชื่อเข้าใช้ได้โดยทันทีโดยไม่ต้องทำการ Auth ใหม่ (เนื่องจากเบราว์เซอร์จะแนบ Cookie และ session การล็อกอินของคุณไปด้วยโดยอัตโนมัติ)
+*   **ดึงข้อมูลสรุปแบบเรียลไทม์ (Live Data Fetching)**: ดึงผลลัพธ์ JSON จากระบบภายนอกมาแสดงหรือป้อนลงตารางข้อมูลในคราวเดียว

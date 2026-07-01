@@ -1,0 +1,57 @@
+---
+title: Resource Status
+sidebar_label: Resource Status
+sidebar_position: 9
+---
+
+import WorkflowPreview from '@site/src/components/WorkflowPreview';
+import resourceStatusData from '@site/docs/Script/Resource Status.json';
+
+# Resource Status Workflow
+
+ตัวอย่าง Workflow สาธิตการทำงานของบล็อก **Resource Status** ที่ใช้สำหรับจัดประเภทและอัปเดตสถานะของบัญชี หรือแหล่งข้อมูลทรัพยากรระบบ (Resource Status Management) เช่น ปรับสถานะบัญชีโซเชียลมีเดีย (Facebook, TikTok, YouTube, Shopee, Zalo, ฯลฯ) ว่ากำลังใช้งานอยู่หรือมีปัญหาขัดข้อง โดยเชื่อมต่อจากบล็อก **Start (Trigger)** ไปยังบล็อก **Open URL** และตามด้วยบล็อก **Resource Status**
+
+## Interactive Workflow Preview
+
+คลิกที่บล็อกเพื่อดูและแก้ไขข้อมูลได้ ลากพื้นหลังเพื่อเลื่อนดู ใช้ Scroll เพื่อซูมเข้า/ออก
+
+<WorkflowPreview data={resourceStatusData} height={580} />
+
+## Workflow Blocks
+
+| Block | Type | Description |
+|-------|------|-------------|
+| **Start (Trigger)** | `BlockBasic` | จุดเริ่มต้นการทำงาน พร้อมระบบ Parameters สำหรับสร้าง UI Form รับข้อมูลผู้ใช้ |
+| **Open URL** | `BlockBasicWithFallback` | เปิดหน้าเว็บเป้าหมาย (ในตัวอย่างใช้ `facebook.com`) |
+| **Resource Status** | `BlockBasicWithFallback` | จัดการปรับปรุงระดับสถานะการทำงานของบัญชี/ทรัพยากรบนแพลตฟอร์มต่าง ๆ พร้อมใส่บันทึกรายละเอียด |
+
+## การตั้งค่าบล็อก Resource Status
+
+บล็อก **Resource Status** ช่วยในการมาร์กสถานะบัญชีหรือแบ่งหมวดหมู่ทรัพยากรเพื่อวิเคราะห์การทำงานอัตโนมัติ
+
+### ค่าพารามิเตอร์
+
+| พารามิเตอร์ | คำอธิบาย | ตัวเลือก / รายละเอียดเพิ่มเติม |
+| :--- | :--- | :--- |
+| **Resource type** | แพลตฟอร์มหรือบริการออนไลน์ที่ใช้เก็บทรัพยากร | `Facebook`, `Tiktok`, `Youtube`, `Shopee`, `Instagram`, `Twitter`, `Telegram`, `Zalo`, `Google`, `Outlook` |
+| **Action Selector** | โหมดในการบันทึกหรือมาร์กข้อมูล | `Status` (บันทึกสถานะการทำกิจกรรม) <br/> `Resource` (บันทึกระดับทรัพยากรหลัก) |
+| **Status type** | ประเภทสถานะที่ต้องการระบุให้กับบัญชี | `Active` (พร้อมใช้งาน) <br/> `Inactive` (ปิดใช้งานชั่วคราว) <br/> `Invalid` (ข้อมูลไม่ถูกต้อง/โดนแบน) <br/> `Unknown` (ไม่ทราบสถานะ) |
+| **Note type** | ข้อความบันทึกเหตุผลประกอบเพิ่มเติม (Status Note) | รองรับการพิมพ์ตรง ๆ หรือแทรกตัวแปรส้ม `{x}` (เช่น `{{variables.error_reason}}`) |
+| **Timeout** | ระยะเวลาจำกัดสูงสุดของการทำงานของบล็อก (มิลลิวินาที) | หน่วยเป็นมิลลิวินาที (เช่น `5000` ms) |
+| **Delay time** | เวลาหน่วงก่อนดำเนินงาน (มิลลิวินาที) | หน่วยเป็นมิลลิวินาที (เช่น `1000` ms = 1 วินาที) |
+
+---
+
+### กรณีการนำไปใช้งาน (Use Cases)
+
+*   **จัดระเบียบบัญชีสแปม/บอท (Bot Account Management)**: เมื่อระบบบอทตรวจพบด่านตรวจสอบ (Checkpoint) หรือรหัสผ่านผิดพลาดจนเข้าใช้งานไม่ได้ สามารถสั่งเปลี่ยนสถานะเป็น `Invalid` พร้อมบันทึกข้อความลงในช่อง Note ได้ทันที เพื่อคัดแยกบัญชีเสียออกไป
+*   **เช็คปริมาณการกรอกงานสำเร็จ**: บันทึกสถานะบัญชีเป็น `Active` เมื่อบอทนำเข้ากรอกประมวลผลงานในระบบสำเร็จลุล่วง
+*   **สร้างระบบรายงานข้อผิดพลาด (Auto Error Logging)**: ดึงข้อมูลสรุปสถานะการทำงานมารวมไว้ที่แดชบอร์ดกลางตามความขัดข้องของแพลตฟอร์มย่อย
+
+---
+
+### ลำดับการทำงานของ Workflow นี้
+
+1.  **Start (Trigger)** — เริ่มทำงานและรันพารามิเตอร์ของระบบเริ่มต้น
+2.  **Open URL** — เปิดหน้าเบราว์เซอร์ไปที่เป้าหมาย `https://www.facebook.com/`
+3.  **Resource Status** — ปรับปรุงสถานะประเภทบัญชี (ตัวอย่างเป็น Facebook) และส่งบันทึกสถานะเรียบร้อย

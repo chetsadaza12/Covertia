@@ -1,0 +1,50 @@
+---
+title: Workflow State
+sidebar_label: Workflow State
+sidebar_position: 17
+---
+
+import WorkflowPreview from '@site/src/components/WorkflowPreview';
+import workflowStateData from '@site/docs/Script/Workflow State.json';
+
+# Workflow State Workflow
+
+ตัวอย่าง Workflow สาธิตการทำงานของบล็อก **Workflow State** ซึ่งเป็นคำสั่งควบคุมสถานะการทำงานของเวิร์กโฟลว์ทั้งหมดภายในระบบ ช่วยให้นักพัฒนาสามารถหยุดหรือสั่งการเวิร์กโฟลว์อื่น ๆ รวมถึงเวิร์กโฟลว์ปัจจุบันได้ตามเงื่อนไขที่กำหนด
+
+## Interactive Workflow Preview
+
+คลิกที่บล็อกเพื่อปรับเปลี่ยนพารามิเตอร์ ลากย้ายตำแหน่งบล็อก และ Scroll เพื่อซูมเข้า/ออก
+
+<WorkflowPreview data={workflowStateData} height={580} />
+
+## Workflow Blocks
+
+| Block | Type | Description |
+|-------|------|-------------|
+| **Start (Trigger)** | `BlockBasic` | จุดเริ่มต้นทำงานเวิร์กโฟลว์ |
+| **Open URL** | `BlockBasicWithFallback` | เปิดหน้าเว็บเบราว์เซอร์ปลายทาง |
+| **Workflow State** | `BlockBasicWithFallback` | บล็อกกำหนดสถานะและควบคุมการทำงานของเวิร์กโฟลว์ในระบบ |
+
+## การตั้งค่าบล็อก Workflow State
+
+บล็อก **Workflow State** ช่วยให้คุณเลือกแอ็กชันควบคุมการหยุดการทำงานของสคริปต์ได้
+
+### ค่าพารามิเตอร์หลัก
+
+| พารามิเตอร์ | คำอธิบาย | ตัวเลือก / รายละเอียดเพิ่มเติม |
+| :--- | :--- | :--- |
+| **Description** | คำอธิบายรายละเอียดสำหรับบล็อกนี้ | แสดงผลเป็นตัวเอียงสีจาง |
+| **Action** | คำสั่งในการจัดการสถานะเวิร์กโฟลว์ | หมวดหมู่ **Stop workflows**: <br/>• `Stop all workflows` (หยุดเวิร์กโฟลว์ทั้งหมด)<br/>• `Stop current workflow` (หยุดเวิร์กโฟลว์ปัจจุบัน)<br/>• `Stop specific workflows` (หยุดเฉพาะเวิร์กโฟลว์ที่กำหนด) |
+| **Except current workflow** | ข้ามหรือยกเว้นไม่หยุดเวิร์กโฟลว์ปัจจุบันที่กำลังรันอยู่ | ปรากฏเมื่อเลือก Action เป็น `Stop specific workflows` เท่านั้น |
+
+### ค่าในส่วน Settings
+
+*   **Timeout (millisecond)**: กำหนดเวลาสูงสุดในการทำงานของบล็อกนี้
+*   **Delay time (millisecond)**: เวลาหน่วงก่อนเริ่มประมวลผลคำสั่งในบล็อก
+
+---
+
+### กรณีการใช้งาน (Use Cases)
+
+*   **Error / Exception Handling**: เมื่อเกิดข้อผิดพลาดร้ายแรงที่ไม่สามารถดำเนินงานต่อได้ (เช่น หาปุ่มคลิกไม่พบในกรณีสำคัญ) คุณสามารถใช้บล็อกนี้เพื่อสั่งหยุดระบบทั้งหมด (`Stop all workflows`) เพื่อความปลอดภัย
+*   **Sequential Chain Control**: หยุดเวิร์กโฟลว์ย่อยปัจจุบันแล้วสลับไปทำงานเวิร์กโฟลว์อื่น หรือเคลียร์สตรีมระบบให้ว่างพร้อมเริ่มชุดงานใหม่

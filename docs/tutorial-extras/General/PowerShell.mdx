@@ -1,0 +1,57 @@
+---
+title: PowerShell
+sidebar_label: PowerShell
+sidebar_position: 7
+---
+
+import WorkflowPreview from '@site/src/components/WorkflowPreview';
+import powerShellData from '@site/docs/Script/PowerShell.json';
+
+# PowerShell Workflow
+
+ตัวอย่าง Workflow สาธิตการทำงานของบล็อก **PowerShell** ที่ใช้สำหรับรันสคริปต์คำสั่งของ Windows PowerShell เพื่อควบคุมหรือทำงานร่วมกับฟีเจอร์ระดับสูงในระบบปฏิบัติการ Windows โดยเชื่อมต่อจากบล็อก **Start (Trigger)** ไปยังบล็อก **Open URL** และส่งต่อข้อมูลไปยังบล็อก **PowerShell**
+
+## Interactive Workflow Preview
+
+คลิกที่บล็อกเพื่อดูและแก้ไขข้อมูลได้ ลากพื้นหลังเพื่อเลื่อนดู ใช้ Scroll เพื่อซูมเข้า/ออก
+
+<WorkflowPreview data={powerShellData} height={580} />
+
+## Workflow Blocks
+
+| Block | Type | Description |
+|-------|------|-------------|
+| **Start (Trigger)** | `BlockBasic` | จุดเริ่มต้นการทำงาน พร้อมระบบ Parameters สำหรับสร้าง UI Form รับข้อมูลผู้ใช้ |
+| **Open URL** | `BlockBasicWithFallback` | เปิดหน้าเว็บเป้าหมาย (ในตัวอย่างใช้ `facebook.com`) |
+| **PowerShell** | `BlockBasicWithFallback` | เรียกใช้งานเครื่องมือ Windows PowerShell ในการประมวลผลสคริปต์คำสั่งระบบและดึงผลลัพธ์การพิมพ์ตอบกลับมาใช้งานต่อ |
+
+## การตั้งค่าบล็อก PowerShell
+
+บล็อก **PowerShell** ช่วยอำนวยความสะดวกในการประมวลผลสคริปต์คำสั่งระดับระบบ (cmdlet) ของ Microsoft Windows
+
+### ค่าพารามิเตอร์
+
+| พารามิเตอร์ | คำอธิบาย | รายละเอียดเพิ่มเติม |
+| :--- | :--- | :--- |
+| **Command** | สคริปต์หรือคำสั่ง PowerShell ที่ต้องการประมวลผล | เช่น `Get-Process`, `Get-Service`, หรือคำสั่งรันสคริปต์ `.ps1` |
+| **Assign to variable** | บันทึกข้อความการพิมพ์ตอบกลับของระบบ (stdout) ลงในตัวแปรสคริปต์ | เปิด/ปิด (Boolean) |
+| **Variable name** | กำหนดชื่อตัวแปรที่ใช้รับข้อมูล | ตัวอย่างเช่น: `ps_output` |
+| **Regular expression (Regex)** | นิพจน์ระบุเพื่อสกัดเฉพาะกลุ่มคำหรือข้อมูลที่ต้องการจากผลลัพธ์ | ตัวอย่างเช่น: `\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b` เพื่อสกัดอีเมล |
+| **Timeout** | ระยะเวลาจำกัดสูงสุดของการรันคำสั่ง (มิลลิวินาที) | ป้องกันสคริปต์ทำงานค้างเมื่อเกิดข้อผิดพลาดเบื้องหลัง |
+| **Delay time** | เวลาหน่วงก่อนจะเริ่มดำเนินการ (มิลลิวินาที) | หน่วยเป็นมิลลิวินาที (เช่น `1000` ms) |
+
+---
+
+### กรณีการนำไปใช้งาน (Use Cases)
+
+*   **สกัดข้อมูลระบบเชิงลึก (System Administration)**: ใช้คำสั่ง PowerShell เช่น `Get-HotFix` เพื่อตรวจสอบข้อมูลอัปเดตระบบ หรือดึงข้อมูลโปรเซสที่กำลังเปิดทำงานอยู่ (`Get-Process`)
+*   **จัดการข้อมูลไฟล์ของเครื่อง**: รันคำสั่งสคริปต์ตรวจสอบโฟลเดอร์ คัดลอก ย้าย หรือบีบอัดไฟล์ภาพ/เอกสาร (Zip) ก่อนที่จะอัปโหลดเข้าสู่เบราว์เซอร์
+*   **เชื่อมต่อคำสั่งภายนอกเชิงลึก**: ทำการเรียกโปรแกรมอื่น ๆ ของระบบ Windows หรือทำระบบ Autoclick ร่วมกับ API เชิงลึกของระบบปฏิบัติการ
+
+---
+
+### ลำดับการทำงานของ Workflow นี้
+
+1.  **Start (Trigger)** — เริ่มต้นชุดคำสั่ง Automation
+2.  **Open URL** — เปิดเบราว์เซอร์เชื่อมต่อไปยัง `https://www.facebook.com/`
+3.  **PowerShell** — รันสคริปต์คำสั่งระบบของ Windows PowerShell และพร้อมส่งผลลัพธ์กลับสู่ขั้นตอนถัดไป

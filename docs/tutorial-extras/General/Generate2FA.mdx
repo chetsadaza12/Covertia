@@ -1,0 +1,55 @@
+---
+title: Generate 2FA
+sidebar_label: Generate 2FA
+sidebar_position: 6
+---
+
+import WorkflowPreview from '@site/src/components/WorkflowPreview';
+import generate2FAData from '@site/docs/Script/Generate 2FA.json';
+
+# Generate 2FA Workflow
+
+ตัวอย่าง Workflow สาธิตการทำงานของบล็อก **Generate 2FA** ที่ใช้สำหรับสร้างรหัสผ่านครั้งเดียวแบบจำกัดเวลา (Time-Based One-Time Password หรือ TOTP) จากรหัสลับ (Secret Key) เพื่อใช้ล็อกอินเข้าสู่ระบบที่มีการตรวจสอบความปลอดภัยขั้นสอง (2FA) โดยเชื่อมต่อจากบล็อก **Start (Trigger)** ไปยังบล็อก **Open URL** และส่งต่อข้อมูลไปยังบล็อก **Generate 2FA**
+
+## Interactive Workflow Preview
+
+คลิกที่บล็อกเพื่อดูและแก้ไขข้อมูลได้ ลากพื้นหลังเพื่อเลื่อนดู ใช้ Scroll เพื่อซูมเข้า/ออก
+
+<WorkflowPreview data={generate2FAData} height={580} />
+
+## Workflow Blocks
+
+| Block | Type | Description |
+|-------|------|-------------|
+| **Start (Trigger)** | `BlockBasic` | จุดเริ่มต้นการทำงาน พร้อมระบบ Parameters สำหรับสร้าง UI Form รับข้อมูลผู้ใช้ |
+| **Open URL** | `BlockBasicWithFallback` | เปิดหน้าเว็บเป้าหมาย (ในตัวอย่างใช้ `facebook.com`) |
+| **Generate 2FA** | `BlockBasicWithFallback` | คำนวณและสร้างรหัสผ่านชั่วคราว 2FA (TOTP) จากรหัสลับ (Secret Key) ในเวลานั้น ๆ |
+
+## การตั้งค่าบล็อก Generate 2FA
+
+บล็อก **Generate 2FA** ช่วยแปลงกุญแจลับ (Secret Key) ของระบบความปลอดภัย 2 ชั้น ให้กลายเป็นรหัส TOTP ขนาด 6 หลักโดยอัตโนมัติ
+
+### ค่าพารามิเตอร์
+
+| พารามิเตอร์ | คำอธิบาย | รายละเอียดเพิ่มเติม |
+| :--- | :--- | :--- |
+| **Generate 2FA** | รหัสลับ (Secret Key) ของบริการที่ต้องการสกัดรหัส | คีย์ลับความยาว 16-32 ตัวอักษร (เช่น `JBSWY3DPEHPK3PXP`) รองรับการดึงจากตัวแปร `{{variables}}` |
+| **Assign to variable** | เปิดใช้งานหากต้องการนำรหัส TOTP ที่สร้างขึ้นไปบันทึกลงในตัวแปรระบบ | เปิด/ปิด (Boolean) |
+| **Variable name** | กำหนดชื่อตัวแปรเมื่อต้องการจัดเก็บผลรหัส 6 หลัก | ตัวอย่างเช่น: `totp_code` |
+| **Timeout** | ระยะเวลาจำกัดในการคำนวณของบล็อก (มิลลิวินาที) | หน่วยเป็นมิลลิวินาที (เช่น `5000` ms) |
+| **Delay time** | เวลาหน่วงก่อนเริ่มดำเนินงาน (มิลลิวินาที) | หน่วยเป็นมิลลิวินาที (เช่น `1000` ms = 1 วินาที) |
+
+---
+
+### กรณีการนำไปใช้งาน (Use Cases)
+
+*   **ล็อกอินอัตโนมัติด้วย 2FA (Auto 2FA Login)**: เมื่อระบบอัตโนมัติกรอก Username และ Password เรียบร้อยแล้ว หากเจอด่านตรวจจับความปลอดภัย 2 ชั้น (เช่น Facebook, Google, GitHub, บัญชีแผงควบคุมระบบ) บล็อกนี้จะช่วยคำนวณสร้างรหัส TOTP 6 หลัก ณ วินาทีนั้น ๆ เพื่อนำรหัสไปใช้กรอกต่อโดยทันที
+*   **จัดการสิทธิผ่านระบบ API หรือ Bot**: ใช้สร้าง OTP เพื่ออนุญาตดำเนินการโอนย้ายข้อมูล หรือการทำธุรกรรมความปลอดภัยสูงผ่านบอท
+
+---
+
+### ลำดับการทำงานของ Workflow นี้
+
+1.  **Start (Trigger)** — เริ่มต้นระบบ Automation
+2.  **Open URL** — เปิดหน้าเบราว์เซอร์ไปที่เป้าหมาย `https://www.facebook.com/`
+3.  **Generate 2FA** — ประมวลผลจาก Secret Key ที่กำหนดเพื่อรับรหัสผ่าน 2FA 6 หลัก และพร้อมนำไปใช้งานในฟิลด์ล็อกอินขั้นตอนต่อไป

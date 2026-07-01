@@ -1,0 +1,51 @@
+---
+title: Wait Connections
+sidebar_label: Wait Connections
+sidebar_position: 16
+---
+
+import WorkflowPreview from '@site/src/components/WorkflowPreview';
+import waitConnectionsData from '@site/docs/Script/Wait Connections.json';
+
+# Wait Connections Workflow
+
+ตัวอย่าง Workflow สาธิตการทำงานของบล็อก **Wait Connections** ซึ่งเป็นคำสั่งควบคุมขั้นสูงสำหรับ **หยุดรอการเชื่อมต่อจากหลายสายงาน (Branch)** ก่อนที่จะดำเนินการต่อ เหมาะกับ Workflow ที่แยกทำงานแบบขนาน (Parallel) หรือมีหลายสาขาที่ต้องรอให้เสร็จสิ้นพร้อมกันก่อนถึงจะดำเนินการในขั้นถัดไปได้
+
+## Interactive Workflow Preview
+
+คลิกที่บล็อกเพื่อดูและแก้ไขค่าพารามิเตอร์ ลากโฮเวอร์บล็อกเพื่อเลื่อนหน้าจอ และ Scroll เพื่อซูมเข้า/ออก
+
+<WorkflowPreview data={waitConnectionsData} height={580} />
+
+## Workflow Blocks
+
+| Block | Type | Description |
+|-------|------|-------------|
+| **Start (Trigger)** | `BlockBasic` | จุดเริ่มต้นการทำงาน |
+| **Open URL** | `BlockBasicWithFallback` | เปิดหน้าเว็บเป้าหมาย |
+| **Blocks Group** | `BlockGroup` | กลุ่มบล็อกที่รวบรวมการทำงานขนานจากหลายสาขา (ในตัวอย่างนี้บรรจุ Browser Request ไว้ภายใน) |
+
+## การตั้งค่าบล็อก Wait Connections
+
+### ค่าพารามิเตอร์หลัก
+
+| พารามิเตอร์ | คำอธิบาย | ค่าเริ่มต้น |
+| :--- | :--- | :--- |
+| **Description** | คำอธิบายสำหรับบล็อกนี้ | ว่าง |
+| **Timeout (milliseconds)** | เวลาสูงสุดที่ระบบจะรอให้การเชื่อมต่อทั้งหมดเสร็จสิ้น (รองรับการใส่ตัวแปร `{x}`) | `10000` (10 วินาที) |
+| **Only continue a specific flow** | หากเปิดใช้งาน จะดำเนินการต่อเฉพาะสาขาที่กำหนดเท่านั้น แทนที่จะรอทุกสาขา | ปิด |
+
+### ค่าในส่วน Settings
+
+| พารามิเตอร์ | คำอธิบาย |
+| :--- | :--- |
+| **Timeout (millisecond)** | กำหนดระยะเวลา Timeout สำหรับ Runtime (เป็นตัวเลข) |
+| **Delay time (millisecond)** | เพิ่มหน่วงเวลาก่อนที่บล็อกจะดำเนินงาน เพื่อรอให้ระบบพร้อม |
+
+---
+
+### กรณีการใช้งาน (Use Cases)
+
+*   **Parallel Branch Synchronization**: เมื่อมีหลายสาขาทำงานขนานกัน (เช่น ดึงข้อมูลผู้ใช้และดึงข้อมูลสถิติพร้อมกัน) และต้องการรอให้ทุกสาขาเสร็จก่อนดำเนินงานต่อ
+*   **Rate Limiting / Throttling**: ใช้ร่วมกับ Timeout เพื่อจำกัดความเร็วการทำงาน โดยรอให้ทุก Connection พร้อมก่อนส่งคำขอถัดไป
+*   **Conditional Branch Wait**: เปิด `Only continue a specific flow` เพื่อรอเฉพาะสาขาที่สำเร็จเป็นแรก โดยไม่สนใจสาขาอื่น
