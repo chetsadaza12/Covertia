@@ -32,6 +32,7 @@ const LABEL_MAP = {
   'delay': 'Delay',
   'clipboard': 'Clipboard',
   'command': 'Cmd',
+  'commandPro': 'Command',
   'loop': 'Loop',
   'conditions': 'Conditions',
   'javascript-code': 'JavaScript',
@@ -815,6 +816,9 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
   const [commandVal, setCommandVal] = useState(node.data?.command || '');
   const [regexVal, setRegexVal] = useState(node.data?.regex || '');
 
+  const [commandExecutorType, setCommandExecutorType] = useState(node.data?.type || 'cmd');
+  const [commandExecutorDropdownOpen, setCommandExecutorDropdownOpen] = useState(false);
+
   // Mouse Click & Input Text states
   const [selector, setSelector] = useState('');
   const [selectorType, setSelectorType] = useState('XPath');
@@ -923,6 +927,9 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
     // Command
     setCommandVal(node.data?.command || '');
     setRegexVal(node.data?.regex || '');
+
+    setCommandExecutorType(node.data?.type || 'cmd');
+    setCommandExecutorDropdownOpen(false);
 
     // Close dropdowns
     setDropdownOpen(false);
@@ -1932,6 +1939,152 @@ function PropertiesPanel({ node, onClose, onUpdate, onOpenParameters, parameters
                 value={delay}
                 onChange={handleDelayChange}
               />
+            </div>
+          </>
+        ) : node.label === 'commandPro' ? (
+          <>
+            {/* Command Executor Type Dropdown */}
+            <div className={styles.propsField} style={{ position: 'relative' }}>
+              <div
+                className={styles.customSelect}
+                onClick={() => setCommandExecutorDropdownOpen(!commandExecutorDropdownOpen)}
+              >
+                <span>
+                  {commandExecutorType === 'cmd' ? 'Cmd' : 
+                   commandExecutorType === 'terminal' ? 'Terminal' : 'PowerShell'}
+                </span>
+                <span className={styles.chevron}>{commandExecutorDropdownOpen ? '▲' : '▼'}</span>
+              </div>
+              {commandExecutorDropdownOpen && (
+                <div className={styles.dropdownOptions}>
+                  {[
+                    { value: 'cmd', label: 'Cmd' },
+                    { value: 'terminal', label: 'Terminal' },
+                    { value: 'powershell', label: 'PowerShell' }
+                  ].map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`${styles.dropdownOption} ${commandExecutorType === opt.value ? styles.dropdownOptionSelected : ''}`}
+                      onClick={() => {
+                        setCommandExecutorType(opt.value);
+                        onUpdate(node.id, 'type', opt.value);
+                        setCommandExecutorDropdownOpen(false);
+                      }}
+                    >
+                      <span>{opt.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Command text input */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Command</label>
+              <VariableInput
+                placeholder=""
+                value={commandVal}
+                onChange={(val) => {
+                  setCommandVal(val);
+                  onUpdate(node.id, 'command', val);
+                }}
+                isTextarea={true}
+                parameters={parameters}
+              />
+            </div>
+
+            {/* Assign to variable checkbox */}
+            <div className={styles.checkboxGroup} style={{ marginTop: '0.75rem' }}>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={assignVariable}
+                  onChange={(e) => {
+                    const val = e.target.checked;
+                    setAssignVariable(val);
+                    onUpdate(node.id, 'assignVariable', val);
+                  }}
+                />
+                <span>Assign to variable</span>
+              </label>
+            </div>
+
+            {/* Variable name & Regex inputs */}
+            {assignVariable && (
+              <>
+                <div className={styles.propsField}>
+                  <label className={styles.propsFieldLabel}>Variable name</label>
+                  <input
+                    type="text"
+                    placeholder="Variable name"
+                    value={variableName}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setVariableName(val);
+                      onUpdate(node.id, 'variableName', val);
+                    }}
+                  />
+                </div>
+                <div className={styles.propsField}>
+                  <label className={styles.propsFieldLabel}>Regular expression (Regex)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. \d+"
+                    value={regexVal}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setRegexVal(val);
+                      onUpdate(node.id, 'regex', val);
+                    }}
+                  />
+                </div>
+              </>
+            )}
+
+            {/* Divider */}
+            <div style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', margin: '1rem 0' }} />
+
+            {/* Settings Section */}
+            <h4 className={styles.sectionHeader} style={{ borderTop: 'none', paddingTop: 0, marginTop: 0 }}>Settings</h4>
+
+            {/* Timeout */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Timeout (millisecond)</label>
+              <input
+                type="number"
+                value={timeout}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10) || 0;
+                  setTimeoutVal(val);
+                  onUpdate(node.id, 'timeout', val);
+                }}
+              />
+            </div>
+
+            {/* Delay time */}
+            <div className={styles.propsField}>
+              <label className={styles.propsFieldLabel}>Delay time (millisecond)</label>
+              <input
+                type="number"
+                value={delay}
+                onChange={handleDelayChange}
+              />
+            </div>
+
+            {/* On Error Section */}
+            <h4 className={styles.sectionHeader} style={{ borderTop: 'none', paddingTop: 0, marginTop: 0 }}>On error</h4>
+            <div className={styles.propsField}>
+              <div className={styles.toggleWrapper}>
+                <label className={styles.switch}>
+                  <input
+                    type="checkbox"
+                    checked={onErrorEnabled}
+                    onChange={handleOnErrorToggle}
+                  />
+                  <span className={styles.slider}></span>
+                </label>
+                <span className={styles.toggleLabel}>Enable</span>
+              </div>
             </div>
           </>
         ) : node.label === 'command' ? (
